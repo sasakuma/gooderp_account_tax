@@ -315,6 +315,21 @@
             <field name="type">other_pay</field>
             <field name="account_id" ref="finance.small_business_chart2221003"/>
         </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
         <record id="collar_material" model="core.category">
             <field name="name">领材料</field>
             <field name="type">finance</field>
