@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<templates id='template' xml:space='preserve'>
+    <t t-name='test'>
+        <div  class='section m-t-lg m-b-lg top_div'>
+            <div class='container'>
+                    <div class='row-fluid'>
+                        <div class='span12 feature-bg text-center'>
+                                <a><h1>数据统计</h1></a>
+                                <a>testdadfdsa</a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </t>
+</templates>

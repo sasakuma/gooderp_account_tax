@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<!-- 引出wizard-->
+
+        <record id="action_test" model="ir.actions.client">
+            <field name="name">测试</field>
+            <field name="tag">export_wages.test2</field>
+        </record>
+
+        <template id="test1" name="xuan" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/export_wages/static/src/css/test.css"/>
+                <script type="text/javascript" src="/export_wages/static/src/js/test.js"/>
+            </xpath>
+        </template>
+
+        <menuitem id="test_menu" name="测试" parent="staff_wages.menu_staff_wages"
+            action="action_test" sequence='10'/>
+
+	</data>
+</openerp>

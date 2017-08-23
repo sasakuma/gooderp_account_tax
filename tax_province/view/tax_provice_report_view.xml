@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+        <record id="tax_provice_updata_form" model="ir.ui.view">
+            <field name="name">tax.provice.updata.form</field>
+            <field name="model">tax.provice.updata</field>
+            <field name="arch" type="xml">
+            	<form>
+                    <group>
+						<field name="account"/>
+                        <field name="password"/>
+                        <field name="mobile"/>
+                    </group>
+                    <footer>
+                        <button name="tax_provice_update"  string="上传" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+
+        <!--地税报表tree-->
+        <record id='tax_report_tree' model='ir.ui.view'>
+			<field name='name'>tax.report.tree</field>
+			<field name='model'>tax.report</field>
+			<field name='arch' type='xml'>
+				<tree string='税务申报表'>
+                    <field name='name'/>
+                    <field name='period_id'/>
+				</tree>
+			</field>
+		</record>
+
+        <record id='tax_report_form' model='ir.ui.view'>
+			<field name='name'>tax.report.form</field>
+			<field name='model'>tax.report</field>
+			<field name='arch' type='xml'>
+				<form string='税务申报表' editable='TOP'>
+                    <sheet>
+                        <header>
+	                	    <button name='tax_to_voucher' string="生成凭证" type="object" class="oe_highlight"/>
+                        </header>
+                        <group>
+                            <group>
+                                <field name='name'/>
+                                <field name='date'/>
+                                <field name='account'/>
+                                <field name='balance_directions'/>
+                                <field name='period_id'/>
+                                <field name='amount'/>
+                            </group>
+                            <group string="公式帮助">
+                                <div>minamt代表：本月借方合计</div>
+                                <div>mouamt代表：本月贷方合计</div>
+                                <div>yinamt代表：本年借方合计</div>
+                                <div>youamt代表：本年贷方合计</div>
+                                <div>mbnamt代表：本月余额合计</div>
+                                <div>ybnamt代表：本年余额合计</div>
+                                <div>"minamt1001,2017,01"代表：取2017-01的现金科目的本月借方合计</div>
+                                <div>"minamt1001,2017,0"代表：取2017年本月的现金科目的本月借方合计</div>
+                                <div>"minamt1001,0,01"代表：取本年1月的现金科目的本月借方合计</div>
+                                <div>"minamt1001,0,0"代表：取本年本月的现金科目的本月借方合计</div>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="申报明细行">
+                                <field name="line_ids">
+                                     <tree string="申报明细行" editable="bottom">
+                                         <field name="name"/>
+                                         <field name="account"/>
+                                         <field name="balance_directions"/>
+                                         <field name="occurrence_balance_formula"/>
+                                         <field name="current_occurrence_balance"/>
+                                         <field name="tax_rate"/>
+                                         <field name="amount"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+				</form>
+			</field>
+		</record>
+
+        <!--继承地税设置,添加申报报表关连-->
+        <record id="config_province_form_inherit" model="ir.ui.view">
+            <field name="name">config.province.form.inherit</field>
+            <field name="model">config.province</field>
+            <field name='inherit_id' ref='tax.config_province_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='add_url']" position="after">
+                    <field name="tax_report"/>
+				</xpath>
+            </field>
+        </record>
+	</data>
+</openerp>

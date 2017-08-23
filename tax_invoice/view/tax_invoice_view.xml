@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<!--已认证发票tree-->
+        <record id='tax_invoice_tree' model='ir.ui.view'>
+			<field name='name'>tax.invoice.tree</field>
+			<field name='model'>tax.invoice</field>
+			<field name='arch' type='xml'>
+				<tree string='已认证发票'>
+                    <field name='name'/>
+                    <field name="tax_amount"/>
+                    <field name='state'/>
+				</tree>
+			</field>
+		</record>
+		<!--已认证发票from-->
+		<record id='tax_invoice_form' model='ir.ui.view'>
+			<field name='name'>tax.invoice.form</field>
+			<field name='model'>tax.invoice</field>
+			<field name='arch' type='xml'>
+                <form string="已认证发票">
+	                <header>
+                        <button name='tax_invoice_money' states="draft" string="匹配" type="object" class="oe_highlight"/>
+	                	<button name='tax_invoice_done' states="draft" string="确认" type="object" class="oe_highlight"/>
+	                	<button name='tax_invoice_draft' states="done" string="反确认" type="object" />
+	                    <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+						<group>
+							<field name="name"/>
+                            <field name="tax_amount"/>
+                        </group>
+                        <notebook>
+                            <page string="发票明细">
+                                <field name="line_ids" context="{'order': 1}">
+                                     <tree string="明细行" editable="bottom">
+                                         <field name="partner_code"/>
+										 <field name="partner_id"/>
+                                         <field name="invoice_code"/>
+                                         <field name="invoice_name"/>
+										 <field name="invoice_amount"/>
+										 <field name="invoice_tax"/>
+										 <field name="invoice_open_date"/>
+										 <field name="invoice_confim_date"/>
+										 <field name="tax_rate"/>
+										 <field name="is_deductible"/>
+										 <field name="money_invoice_ids" widget="many2many_tags"
+                                                     options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
+                                     </tree>
+                                </field>
+                            </page>
+                            <page string="进项结构">
+                                <group>
+                                    <group>
+							            <field name="tax_17_amount"/>
+                                        <field name="tax1_amount"/>
+                                    </group>
+                                    <group>
+							            <field name="tax_17"/>
+                                        <field name="tax1"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_13_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_13"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_11_amount"/>
+                                        <field name="tax2_amount"/>
+                                        <field name="tax3_amount"/>
+                                        <field name="tax4_amount"/>
+                                        <field name="tax5_amount"/>
+                                        <field name="tax6_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_11"/>
+                                        <field name="tax2"/>
+                                        <field name="tax3"/>
+                                        <field name="tax4"/>
+                                        <field name="tax5"/>
+                                        <field name="tax6"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_6_amount"/>
+                                        <field name="tax7_amount"/>
+                                        <field name="tax8_amount"/>
+                                        <field name="tax9_amount"/>
+                                        <field name="tax10_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_6"/>
+                                        <field name="tax7"/>
+                                        <field name="tax8"/>
+                                        <field name="tax9"/>
+                                        <field name="tax10"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_5_amount"/>
+                                        <field name="tax11_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_5"/>
+                                        <field name="tax11"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_3_amount"/>
+                                        <field name="tax12_amount"/>
+                                        <field name="tax13_amount"/>
+                                        <field name="tax14_amount"/>
+                                        <field name="tax15_amount"/>
+                                        <field name="tax16_amount"/>
+                                        <field name="tax17_amount"/>
+                                        <field name="tax18_amount"/>
+                                        <field name="tax19_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_3"/>
+                                        <field name="tax12"/>
+                                        <field name="tax13"/>
+                                        <field name="tax14"/>
+                                        <field name="tax15"/>
+                                        <field name="tax16"/>
+                                        <field name="tax17"/>
+                                        <field name="tax18"/>
+                                        <field name="tax19"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="tax_1_5_amount"/>
+                                    </group>
+                                    <group>
+                                        <field name="tax_1_5"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
+        <!--继承供应商form,添加税号信息-->
+        <record id="supplier_tax_number_form_inherit" model="ir.ui.view">
+            <field name="name">supplier_tax_number_form_inherit</field>
+            <field name="model">partner</field>
+            <field name='inherit_id' ref='core.supplier_address_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                    <field name="tax_number" required="1"/>
+				</xpath>
+            </field>
+        </record>
+
+        <!--继承money_invoice,添加认证日期信息-->
+        <record id="tax_invoiced_date_form_inherit" model="ir.ui.view">
+            <field name="name">tax_invoiced_date_form_inherit</field>
+            <field name="model">money.invoice</field>
+            <field name='inherit_id' ref='money.money_invoice_tree' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='bill_number']" position="after">
+                    <field name="tax_invoice_date" readonly="1"/>
+				</xpath>
+            </field>
+        </record>
+
+        <!-- 引入excel action -->
+        <record id="create_invoice_line_form" model="ir.ui.view">
+            <field name="name">create_invoice_line_form</field>
+            <field name="model">create.invoice.line.wizard</field>
+            <field name="arch" type="xml">
+            	<form>
+            		<group>
+						<field name="excel"/>
+                    </group>
+                    <footer>
+                        <button name="create_invoice_line"  string="引入" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+        <act_window id="create_invoice_line_action"
+            name="引入excel"
+            src_model="tax.invoice"
+            res_model="create.invoice.line.wizard"
+            view_type="form"
+            view_mode="form"
+            target="new"/>
+
+        <record id="no_deductible_update_form" model="ir.ui.view">
+            <field name="name">no.eductible.update.form</field>
+            <field name="model">no.deductible.update</field>
+            <field name="arch" type="xml">
+            	<form>
+                    <group>
+						<field name="account"/>
+                        <field name="password"/>
+                    </group>
+                    <footer>
+                        <button name="no_deductible_update"  string="上传" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+
+        <act_window id="no_deductible_update_action"
+            name="上传不抵扣发票"
+            src_model="tax.invoice"
+            res_model="no.deductible.update"
+            view_type="form"
+            view_mode="form"
+            target="new"/>
+
+	</data>
+</openerp>

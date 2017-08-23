@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 国、地税设置 action -->
+        <record id="tax_drawback_action" model="ir.actions.act_window">
+            <field name="name">出口退税</field>
+            <field name="res_model">customs.declare</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+	</data>
+</openerp>

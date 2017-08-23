@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<!--出口退税tree-->
+        <record id='tax_drawback_tree' model='ir.ui.view'>
+			<field name='name'>tax.drawback.tree</field>
+			<field name='model'>customs.declare</field>
+			<field name='arch' type='xml'>
+				<tree string='国税设置'>
+                    <field name='name'/>
+                    <field name='date'/>
+                    <field name='period_id'/>
+					<field name='invoice'/>
+					<field name='is_drawback'/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="drawback_update_action_form" model="ir.ui.view">
+            <field name="name">drawback.update.action.form</field>
+            <field name="model">tax.drawback.updata</field>
+            <field name="arch" type="xml">
+            	<form>
+                    <group>
+                        <field name="password"/>
+                    </group>
+                    <footer>
+                        <button name="drawback_login"  string="上传" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+
+		<act_window id="drawback_update_action"
+            name="上传出口退税申报"
+            src_model="customs.declare"
+            res_model="tax.drawback.updata"
+			multi="True"
+            view_type="form"
+            view_mode="form"
+            target="new"/>
+
+        <!--出口退税form
+		<record id='tax_drawback_form' model='ir.ui.view'>
+			<field name='name'>tax.drawback.form</field>
+			<field name='model'>config.country</field>
+			<field name='arch' type='xml'>
+                <form string="国税设置">
+			    	<sheet>
+                        <group>
+                            <group>
+                                <field name='name'/>
+                                <field name="vpdn_name"/>
+							</group>
+                            <group>
+                                <field name='password'/>
+                                <field name="vpdn_password"/>
+							</group>
+                            <group>
+                                <field name='billing_password'/>
+							</group>
+                        </group>
+                        <notebook>
+                            <page string="申报明细行">
+                                <field name="line_ids">
+                                     <tree string="申报明细行" editable="bottom">
+                                         <field name="name"/>
+                                         <field name="category_id"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+			</field>
+		</record>-->
+
+	</data>
+</openerp>

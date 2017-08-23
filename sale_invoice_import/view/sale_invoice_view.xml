@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+
+		<!--已认证发票tree-->
+        <record id='sale_invoice_tree' model='ir.ui.view'>
+			<field name='name'>sale.invoice.tree</field>
+			<field name='model'>sale.invoice</field>
+			<field name='arch' type='xml'>
+				<tree string='销售发票'>
+                    <field name='invoice_open_date'/>
+                    <field name='name'/>
+                    <field name='invoice_name'/>
+                    <field name="partner_id"/>
+                    <field name="amount"/>
+                    <field name="tax_amount"/>
+                    <field name='state'/>
+				</tree>
+			</field>
+		</record>
+		<!--已认证发票from-->
+		<record id='sale_invoice_form' model='ir.ui.view'>
+			<field name='name'>sale.invoice.form</field>
+			<field name='model'>sale.invoice</field>
+			<field name='arch' type='xml'>
+                <form string="销售发票">
+	                <header>
+	                	<button name='sale_invoice_done' states="draft" string="确认" type="object" class="oe_highlight"/>
+                        <button name='sale_delivery_to_invoice' states="to_delivery" string="继续确认" type="object" />
+	                	<button name='sale_invoice_draft' states="to_delivery,done" string="反确认" type="object" />
+	                    <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+						<group>
+                            <field name="name"/>
+                            <field name="invoice_code"/>
+							<field name="invoice_name"/>
+                            <field name='invoice_open_date'/>
+                            <field name="partner_id"/>
+                            <field name="amount"/>
+                            <field name="tax_amount"/>
+                            <field name="sell_id"/>
+                        </group>
+                        <notebook>
+                            <page string="发票明细">
+                                <field name="line_ids" context="{'order': 1}">
+                                     <tree string="明细行" editable="bottom">
+                                         <field name="goods_id"/>
+										 <field name="quantity"/>
+                                         <field name="uom_id"/>
+                                         <field name="invoice_amount"/>
+                                         <field name="invoice_tax"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
+
+        <!-- 引入excel action -->
+        <record id="create_sale_invoice_form" model="ir.ui.view">
+            <field name="name">create_sale_invoice_form</field>
+            <field name="model">create.sale.invoice.wizard</field>
+            <field name="arch" type="xml">
+            	<form>
+            		<group>
+						<field name="excel" filename="excel_filename"/>
+                        <field name="excel_filename" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="create_sale_invoice"  string="引入" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+        <act_window id="create_sale_invoice_action"
+            name="引入销售excel"
+            res_model="create.sale.invoice.wizard"
+            view_type="form"
+            view_mode="form"
+            target="new"/>
+	</data>
+
+    <!--继承partner,添加系统自我增加-->
+        <record id="partner_form_computer_import_inherit" model="ir.ui.view">
+            <field name="name">partner_form_computer_import_inherit</field>
+            <field name="model">partner</field>
+            <field name='inherit_id' ref='core.customer_address_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                    <field name="computer_import" required="1"/>
+				</xpath>
+            </field>
+        </record>
+    <!--继承goods,添加系统自我增加-->
+        <record id="goods_form_computer_import_inherit" model="ir.ui.view">
+            <field name="name">goods_form_computer_import_inherit</field>
+            <field name="model">goods</field>
+            <field name='inherit_id' ref='goods.goods_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='not_saleable']" position="after">
+                    <field name="computer_import" required="1"/>
+				</xpath>
+            </field>
+        </record>
+
+</openerp>

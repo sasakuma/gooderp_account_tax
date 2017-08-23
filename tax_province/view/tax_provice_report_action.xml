@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 服务管理 action -->
+
+        <act_window id="tax_provice_updata_action"
+        	name='地税申报上传'
+	        res_model="tax.provice.updata"
+	        multi="True"
+	        view_type="form"
+	        view_mode="form"
+	        target="new"
+	        />
+
+		<!-- 申报表 action -->
+        <record id="tax_report_action" model="ir.actions.act_window">
+            <field name="name">地税申报</field>
+            <field name="res_model">tax.report</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>

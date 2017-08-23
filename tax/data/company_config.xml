@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+        <!--将根据发票确认应收应付 打勾-->
+        <record id="base.main_company" model="res.company">
+            <field name="draft_invoice" eval="1" />
+        </record>
+
+	</data>
+</openerp>

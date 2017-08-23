@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 服务管理 action -->
+
+        <record id="tax_invoice_action" model="ir.actions.act_window">
+            <field name="name">发票匹配设置</field>
+            <field name="res_model">tax.invoice</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建发票匹配
+              </p>
+            </field>
+        </record>
+
+	</data>
+</openerp>

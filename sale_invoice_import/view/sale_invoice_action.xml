@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 销售发票管理 action -->
+
+        <record id="sale_invoice_action" model="ir.actions.act_window">
+            <field name="name">销售发票管理</field>
+            <field name="res_model">sale.invoice</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建销售发票，可用于确认生成销售订单
+              </p>
+            </field>
+        </record>
+
+	</data>
+</openerp>

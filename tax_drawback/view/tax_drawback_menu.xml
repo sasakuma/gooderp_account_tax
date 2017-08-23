@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 菜单加入税务模块 -->
+        <menuitem id="menu_tax_drawback" name='出口报关单' action="tax_drawback_action"
+            parent="tax.tax_accounting" sequence="0"/>
+	</data>
+</openerp>

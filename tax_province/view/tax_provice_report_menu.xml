@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 菜单加入税务模块 -->
+        <menuitem id="menu_tax_report" name='税务报表' action="tax_report_action"
+            parent="tax.tax_accounting" sequence="0"/>
+        <menuitem id="menu_tax_provice_updata" name='地税上传' action="tax_provice_updata_action"
+            parent="tax.province_tax_updata" sequence="1"/>
+	</data>
+</openerp>

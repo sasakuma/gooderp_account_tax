@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- 菜单加入税务模块 -->
+        <menuitem id="menu_sale_invoice" name='销售发票' action="sale_invoice_action"
+            parent="tax.tax_accounting" sequence="0"/>
+        <menuitem id='create_sale_invoice' name="引入销售excel，创建销售发票" action='create_sale_invoice_action'
+        	parent='tax.tax_accounting' sequence='11'/>
+	</data>
+</openerp>
