@@ -100,7 +100,7 @@
             <field name='costs_types'>cost</field>
             <field name='balance_directions'>in</field>
         </record>
-        <record id="account_income001" model='finance.account'>
+        <record id="account_income" model='finance.account'>
             <field name='code'>5001001</field>
             <field name='name'>主营业务收入-内销</field>
             <field name='costs_types'>in</field>
@@ -115,6 +115,84 @@
         <record id="account_income003" model='finance.account'>
             <field name='code'>5001003</field>
             <field name='name'>主营业务收入-补差</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="small_business_chart5051" model='finance.account'>
+            <field name='code'>5051001</field>
+            <field name='name'>其他业务收入-销售原材料</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="small_business_chart5051002" model='finance.account'>
+            <field name='code'>5051002</field>
+            <field name='name'>其他业务收入-加工费</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id='account_cost' model='finance.account'>
+            <field name='code'>5401001</field>
+            <field name='name'>主营业务成本-内销</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='account_cost002' model='finance.account'>
+            <field name='code'>5401001</field>
+            <field name='name'>主营业务成本-外销</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5402' model='finance.account'>
+            <field name='code'>5402001</field>
+            <field name='name'>其他业务成本-销售原材料</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5402002' model='finance.account'>
+            <field name='code'>5402002</field>
+            <field name='name'>其他业务成本-加工费</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403' model='finance.account'>
+            <field name='code'>5403001</field>
+            <field name='name'>营业税金及附加-城市维护建设税</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403002' model='finance.account'>
+            <field name='code'>5403002</field>
+            <field name='name'>营业税金及附加-教育费附加</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403003' model='finance.account'>
+            <field name='code'>5403003</field>
+            <field name='name'>营业税金及附加-地方教育费附加</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403004' model='finance.account'>
+            <field name='code'>5403004</field>
+            <field name='name'>营业税金及附加-印花税</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5711002' model='finance.account'>
+            <field name='code'>5711002</field>
+            <field name='name'>营业外支出-捐赠支出</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5711003' model='finance.account'>
+            <field name='code'>5711003</field>
+            <field name='name'>营业外支出-罚没支出</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart5301002" model='finance.account'>
+            <field name='code'>5701002</field>
+            <field name='name'>营业外收入-政府补助利得</field>
             <field name='costs_types'>in</field>
             <field name='balance_directions'>out</field>
         </record>
