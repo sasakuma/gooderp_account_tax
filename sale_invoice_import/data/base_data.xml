@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <!--增加科目-->
         <record id="account_goods" model='finance.account'>
             <field name='code'>140501</field>
