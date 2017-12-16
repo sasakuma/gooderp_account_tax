@@ -26,7 +26,9 @@ import xlrd
 import base64
 import datetime
 import time
-import re
+import pytesseract
+from PIL import Image
+from PIL import ImageEnhance
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -36,17 +38,11 @@ READONLY_STATES = {
         'done': [('readonly', True)],
     }
 
-TAX_TYPE = [('17', u'17%税率'),
-            ('13', u'13%税率'),
-            ('11', u'11%税率'),
-            ('6', u'6%税率'),
-            ('5', u'5%税率'),
-            ('3', u'3%税率'),
-            ('1.5', u'1.5%税率'),]
 
 #初始化chrome
-options = webdriver.ChromeOptions()
-options.add_argument('--explicitly-allowed-ports=6000,556')
+phantomjs_path = r"D:\phantomjs\bin\phantomjs.exe"
+service_log_path = "./log/ghostdriver.log"
+browser = webdriver.PhantomJS(executable_path=phantomjs_path, service_log_path=service_log_path)
 
 class tax_invoice(models.Model):
     '''税务发票'''
@@ -66,58 +62,6 @@ class tax_invoice(models.Model):
     tax_amount = fields.Float(string=u'合计可抵扣税额', store=True, readonly=True,
                         compute='_compute_tax_amount', track_visibility='always',
                         digits=dp.get_precision('Amount'))
-    tax_17 = fields.Float(u'17%的进项',readonly=True,copy=False)
-    tax_13 = fields.Float(u'13%的进项',readonly=True,copy=False)
-    tax_11 = fields.Float(u'11%的进项',readonly=True,copy=False)
-    tax_6 = fields.Float(u'6%的进项',readonly=True,copy=False)
-    tax_5 = fields.Float(u'5%的进项',readonly=True,copy=False)
-    tax_3 = fields.Float(u'3%的进项',readonly=True,copy=False)
-    tax_1_5 = fields.Float(u'1.5%的进项',readonly=True,copy=False)
-    tax1 = fields.Float(u'17%有形动产租赁的进项',readonly=True,copy=False)
-    tax2 = fields.Float(u'11%运输服务的进项',readonly=True,copy=False)
-    tax3 = fields.Float(u'11%电信服务的进项',readonly=True,copy=False)
-    tax4 = fields.Float(u'11%建筑安装服务的进项',readonly=True,copy=False)
-    tax5 = fields.Float(u'11%不动产租赁服务的进项',readonly=True,copy=False)
-    tax6 = fields.Float(u'11%受让土地使用权的进项',readonly=True,copy=False)
-    tax7 = fields.Float(u'6%电信服务的进项',readonly=True,copy=False)
-    tax8 = fields.Float(u'6%金融保险服务的进项',readonly=True,copy=False)
-    tax9 = fields.Float(u'6%生活服务的进项',readonly=True,copy=False)
-    tax10 = fields.Float(u'6%取得无形资产的进项',readonly=True,copy=False)
-    tax11 = fields.Float(u'5%不动产租赁服务的进项',readonly=True,copy=False)
-    tax12 = fields.Float(u'3%货物及加工、修理修配劳务的进项',readonly=True,copy=False)
-    tax13 = fields.Float(u'3%运输服务的进项',readonly=True,copy=False)
-    tax14 = fields.Float(u'3%电信服务的进项',readonly=True,copy=False)
-    tax15 = fields.Float(u'3%建筑安装服务的进项',readonly=True,copy=False)
-    tax16 = fields.Float(u'3%金融保险服务的进项',readonly=True,copy=False)
-    tax17 = fields.Float(u'3%有形动产租赁服务的进项',readonly=True,copy=False)
-    tax18 = fields.Float(u'3%生活服务的进项',readonly=True,copy=False)
-    tax19 = fields.Float(u'3%取得无形资产的进项',readonly=True,copy=False)
-    tax_17_amount = fields.Float(u'17%的进项金额',readonly=True,copy=False)
-    tax_13_amount = fields.Float(u'13%的进项金额',readonly=True,copy=False)
-    tax_11_amount = fields.Float(u'11%的进项金额',readonly=True,copy=False)
-    tax_6_amount = fields.Float(u'6%的进项金额',readonly=True,copy=False)
-    tax_5_amount = fields.Float(u'5%的进项金额',readonly=True,copy=False)
-    tax_3_amount = fields.Float(u'3%的进项金额',readonly=True,copy=False)
-    tax_1_5_amount = fields.Float(u'1.5%的进项金额',readonly=True,copy=False)
-    tax1_amount = fields.Float(u'17%有形动产租赁的进项金额',readonly=True,copy=False)
-    tax2_amount = fields.Float(u'11%运输服务的进项金额',readonly=True,copy=False)
-    tax3_amount = fields.Float(u'11%电信服务的进项金额',readonly=True,copy=False)
-    tax4_amount = fields.Float(u'11%建筑安装服务的进项金额',readonly=True,copy=False)
-    tax5_amount = fields.Float(u'11%不动产租赁服务的进项金额',readonly=True,copy=False)
-    tax6_amount = fields.Float(u'11%受让土地使用权的进项金额',readonly=True,copy=False)
-    tax7_amount = fields.Float(u'6%电信服务的进项金额',readonly=True,copy=False)
-    tax8_amount = fields.Float(u'6%金融保险服务的进项金额',readonly=True,copy=False)
-    tax9_amount = fields.Float(u'6%生活服务的进项金额',readonly=True,copy=False)
-    tax10_amount = fields.Float(u'6%取得无形资产的进项金额',readonly=True,copy=False)
-    tax11_amount = fields.Float(u'5%不动产租赁服务的进项金额',readonly=True,copy=False)
-    tax12_amount = fields.Float(u'3%货物及加工、修理修配劳务的进项金额',readonly=True,copy=False)
-    tax13_amount = fields.Float(u'3%运输服务的进项金额',readonly=True,copy=False)
-    tax14_amount = fields.Float(u'3%电信服务的进项金额',readonly=True,copy=False)
-    tax15_amount = fields.Float(u'3%建筑安装服务的进项金额',readonly=True,copy=False)
-    tax16_amount = fields.Float(u'3%金融保险服务的进项金额',readonly=True,copy=False)
-    tax17_amount = fields.Float(u'3%有形动产租赁服务的进项金额',readonly=True,copy=False)
-    tax18_amount = fields.Float(u'3%生活服务的进项金额',readonly=True,copy=False)
-    tax19_amount = fields.Float(u'3%取得无形资产的进项金额',readonly=True,copy=False)
 
     @api.one
     @api.depends('line_ids.invoice_tax', 'line_ids.is_deductible')
@@ -181,174 +125,6 @@ class tax_invoice(models.Model):
                 money_id.tax_amount = val.get('tax')
             money_id.money_invoice_done()
         self.state = 'done'
-        self.create_input_structure()
-
-    def create_input_structure(self):
-        for line in self.line_ids:
-            #不抵扣发票不计算
-            if line.is_deductible:
-                continue
-            if len(line.money_invoice_ids) == 1:
-                tax_structure = self.env['country.line'].search([('category_id', '=', line.money_invoice_ids.category_id.id)])
-                if line.tax_rate == 17:
-                    self.tax_17 += line.invoice_tax
-                    self.tax_17_amount += line.invoice_amount
-                    if tax_structure.name == 'no16':
-                        self.tax1 += line.invoice_tax
-                        self.tax1_amount += line.invoice_amount
-                elif line.tax_rate == 13:
-                    self.tax_13 += line.invoice_tax
-                    self.tax_13_amount += line.invoice_amount
-                elif line.tax_rate == 11:
-                    self.tax_11 += line.invoice_tax
-                    self.tax_11_amount += line.invoice_amount
-                    if tax_structure.name == 'no1':
-                        self.tax2 += line.invoice_tax
-                        self.tax2_amount += line.invoice_amount
-                    if tax_structure.name == 'no2':
-                        self.tax3 += line.invoice_tax
-                        self.tax3_amount += line.invoice_amount
-                    if tax_structure.name == 'no3':
-                        self.tax4 += line.invoice_tax
-                        self.tax4_amount += line.invoice_amount
-                    if tax_structure.name == 'no4':
-                        self.tax5 += line.invoice_tax
-                        self.tax5_amount += line.invoice_amount
-                    if tax_structure.name == 'no5':
-                        self.tax6 += line.invoice_tax
-                        self.tax6_amount += line.invoice_amount
-                elif line.tax_rate == 6:
-                    self.tax_6 += line.invoice_tax
-                    self.tax_6_amount += line.invoice_amount
-                    if tax_structure.name == 'no2':
-                        self.tax7 += line.invoice_tax
-                        self.tax7_amount += line.invoice_amount
-                    if tax_structure.name == 'no6':
-                        self.tax8 += line.invoice_tax
-                        self.tax8_amount += line.invoice_amount
-                    if tax_structure.name == 'no7':
-                        self.tax9 += line.invoice_tax
-                        self.tax9_amount += line.invoice_amount
-                    if tax_structure.name == 'no8':
-                        self.tax10 += line.invoice_tax
-                        self.tax10_amount += line.invoice_amount
-                elif line.tax_rate == 5:
-                    self.tax_5 += line.invoice_tax
-                    self.tax_5_amount += line.invoice_amount
-                    if tax_structure.name == 'no4':
-                        self.tax11 += line.invoice_tax
-                        self.tax11_amount += line.invoice_amount
-                elif line.tax_rate == 3:
-                    self.tax_3 += line.invoice_tax
-                    self.tax_3_amount += line.invoice_amount
-                    if tax_structure.name == 'no10':
-                        self.tax12 += line.invoice_tax
-                        self.tax12_amount += line.invoice_amount
-                    if tax_structure.name == 'no1':
-                        self.tax13 += line.invoice_tax
-                        self.tax13_amount += line.invoice_amount
-                    if tax_structure.name == 'no2':
-                        self.tax14 += line.invoice_tax
-                        self.tax14_amount += line.invoice_amount
-                    if tax_structure.name == 'no12':
-                        self.tax15 += line.invoice_tax
-                        self.tax15_amount += line.invoice_amount
-                    if tax_structure.name == 'no6':
-                        self.tax16 += line.invoice_tax
-                        self.tax16_amount += line.invoice_amount
-                    if tax_structure.name == 'no16':
-                        self.tax17 += line.invoice_tax
-                        self.tax17_amount += line.invoice_amount
-                    if tax_structure.name == 'no7':
-                        self.tax18 += line.invoice_tax
-                        self.tax18_amount += line.invoice_amount
-                    if tax_structure.name == 'no8':
-                        self.tax19 += line.invoice_tax
-                        self.tax19_amount += line.invoice_amount
-                else:
-                    raise UserError(u'发票%s税率异常！'%line.invoice_name)
-            else:
-                for money in line.money_invoice_ids:
-                    amount = money.amount-money.tax_amount
-                    tax_rate = round(money.tax_amount/amount*100,0)
-                    tax_structure = self.env['country.line'].search([('category_id', '=', money.category_id.id)])
-                    if tax_rate == 17:
-                        self.tax_17 += money.tax_amount
-                        self.tax_17_amount += amount
-                        if tax_structure.name == 'no16':
-                            self.tax1 += money.tax_amount
-                            self.tax_1_amount += amount
-                    elif tax_rate == 13:
-                        self.tax_13 += money.tax_amount
-                        self.tax_13_amount += amount
-                    elif tax_rate == 11:
-                        self.tax_11 += money.tax_amount
-                        self.tax_11_amount += amount
-                        if tax_structure.name == 'no1':
-                            self.tax2 += money.tax_amount
-                            self.tax2_amount += amount
-                        if tax_structure.name == 'no2':
-                            self.tax3 += money.tax_amount
-                            self.tax3_amount += amount
-                        if tax_structure.name == 'no3':
-                            self.tax4 += money.tax_amount
-                            self.tax4_amount += amount
-                        if tax_structure.name == 'no4':
-                            self.tax5 += money.tax_amount
-                            self.tax5_amount += amount
-                        if tax_structure.name == 'no5':
-                            self.tax6 += money.tax_amount
-                            self.tax6_amount += amount
-                    elif tax_rate == 6:
-                        self.tax_6 += money.tax_amount
-                        self.tax_6_amount += amount
-                        if tax_structure.name == 'no2':
-                            self.tax7 += money.tax_amount
-                            self.tax7_amount += amount
-                        if tax_structure.name == 'no6':
-                            self.tax8 += money.tax_amount
-                            self.tax8_amount += amount
-                        if tax_structure.name == 'no7':
-                            self.tax9 += money.tax_amount
-                            self.tax9_amount += amount
-                        if tax_structure.name == 'no8':
-                            self.tax10 += money.tax_amount
-                            self.tax10_amount += amount
-                    elif tax_rate == 5:
-                        self.tax_5 += money.tax_amount
-                        self.tax_5_amount += amount
-                        if tax_structure.name == 'no4':
-                            self.tax11 += money.tax_amount
-                            self.tax11_amount += amount
-                    elif tax_rate == 3:
-                        self.tax_3 += money.tax_amount
-                        self.tax_3_amount += amount
-                        if tax_structure.name == 'no10':
-                            self.tax12 += money.tax_amount
-                            self.tax12_amount += amount
-                        if tax_structure.name == 'no1':
-                            self.tax13 += money.tax_amount
-                            self.tax13_amount += amount
-                        if tax_structure.name == 'no2':
-                            self.tax14 += money.tax_amount
-                            self.tax14_amount += amount
-                        if tax_structure.name == 'no12':
-                            self.tax15 += money.tax_amount
-                            self.tax15_amount += amount
-                        if tax_structure.name == 'no6':
-                            self.tax16 += money.tax_amount
-                            self.tax16_amount += amount
-                        if tax_structure.name == 'no16':
-                            self.tax17 += money.tax_amount
-                            self.tax17_amount += amount
-                        if tax_structure.name == 'no7':
-                            self.tax18 += money.tax_amount
-                            self.tax18_amount += amount
-                        if tax_structure.name == 'no8':
-                            self.tax19 += money.tax_amount
-                            self.tax19_amount += amount
-                    else:
-                        raise UserError(u'发票%s税率异常！'%line.invoice_name)
 
     #在money_invoice上已经写了是哪几张发票的明细进行匹配发票
     @api.one
@@ -416,12 +192,6 @@ class tax_invoice(models.Model):
     @api.one
     def tax_invoice_draft(self):
         ''' 反审核本期发票,反确认money_invoice '''
-        self.tax_17 = self.tax_13 = self.tax_11 = self.tax_6 = self.tax_5 = self.tax_3 = self.tax_1_5 = 0
-        self.tax1 = self.tax2 = self.tax3 = self.tax4 = self.tax5 = self.tax6 = self.tax7 = self.tax8 = self.tax9 = self.tax10 = 0
-        self.tax11 = self.tax12 = self.tax14 = self.tax15 = self.tax16 = self.tax17 = self.tax18 = self.tax19 = self.tax12 = 0
-        self.tax_17_amount = self.tax_13_amount = self.tax_11_amount = self.tax_6_amount = self.tax_5_amount = self.tax_3_amount = self.tax_1_5_amount = 0
-        self.tax1_amount = self.tax2_amount = self.tax3_amount = self.tax4_amount = self.tax5_amount = self.tax6_amount = self.tax7_amount = self.tax8_amount = self.tax9_amount = self.tax10_amount = 0
-        self.tax11_amount = self.tax12_amount = self.tax14_amount = self.tax15_amount = self.tax16_amount = self.tax17_amount = self.tax18_amount = self.tax19_amount = self.tax12_amount = 0
         self.state = 'draft'
 
 class no_deductible_update(models.TransientModel):
@@ -512,53 +282,6 @@ class no_deductible_update(models.TransientModel):
             browser.find_element_by_link_text("返回").click()
             browser.find_element_by_link_text("增值税一般纳税人").click()
             browser.implicitly_wait(10)
-        #上传进项结构明细表
-        if tax_invoice.state == 'done':
-            browser.find_element_by_link_text("进项结构明细表").click()
-            browser.implicitly_wait(10)
-            try:
-                if tax_invoice.tax_17:
-                    browser.find_element_by_id("sl_17_je").clear()
-                    browser.find_element_by_id("sl_17_je").send_keys('%s'%tax_invoice.tax_17_amount)
-                    browser.find_element_by_id("sl_17_se").clear()
-                    browser.find_element_by_id("sl_17_se").send_keys('%s'%tax_invoice.tax_17)
-                if tax_invoice.tax1:
-                    browser.find_element_by_id("sl_17_qz_yxdczp_je").clear()
-                    browser.find_element_by_id("sl_17_qz_yxdczp_je").send_keys('%s'%tax_invoice.tax1_amount)
-                    browser.find_element_by_id("sl_17_qz_yxdczp_se").clear()
-                    browser.find_element_by_id("sl_17_qz_yxdczp_se").send_keys('%s'%tax_invoice.tax1_amount)
-                if tax_invoice.tax_13:
-                    browser.find_element_by_id("sl_13_je").clear()
-                    browser.find_element_by_id("sl_13_je").send_keys('%s'%tax_invoice.tax_13_amount)
-                    browser.find_element_by_id("sl_13_se").clear()
-                    browser.find_element_by_id("sl_13_se").send_keys('%s'%tax_invoice.tax_13)
-                if tax_invoice.tax_11:
-                    browser.find_element_by_id("sl_11_je").clear()
-                    browser.find_element_by_id("sl_11_je").send_keys('%s'%tax_invoice.tax_11_amount)
-                    browser.find_element_by_id("sl_11_se").clear()
-                    browser.find_element_by_id("sl_11_se").send_keys('%s'%tax_invoice.tax_11)
-                if tax_invoice.tax_6:
-                    browser.find_element_by_id("sl_6_je").clear()
-                    browser.find_element_by_id("sl_6_je").send_keys('%s'%tax_invoice.tax_6_amount)
-                    browser.find_element_by_id("sl_6_se").clear()
-                    browser.find_element_by_id("sl_6_se").send_keys('%s'%tax_invoice.tax_6)
-                if tax_invoice.tax_5:
-                    browser.find_element_by_id("sl_5_je").clear()
-                    browser.find_element_by_id("sl_5_je").send_keys('%s'%tax_invoice.tax_5_amount)
-                    browser.find_element_by_id("sl_5_se").clear()
-                    browser.find_element_by_id("sl_5_se").send_keys('%s'%tax_invoice.tax_5)
-                if tax_invoice.tax_17:
-                    browser.find_element_by_id("sl_3_je").clear()
-                    browser.find_element_by_id("sl_3_je").send_keys('%s'%tax_invoice.tax_3_amount)
-                    browser.find_element_by_id("sl_3_se").clear()
-                    browser.find_element_by_id("sl_3_se").send_keys('%s'%tax_invoice.tax_3)
-                browser.find_element_by_link_text("提交").click()
-                browser.implicitly_wait(10)
-                browser.switch_to_alert().accept()
-            except:
-                browser.find_element_by_link_text("返回").click()
-                browser.find_element_by_link_text("增值税一般纳税人").click()
-                browser.implicitly_wait(10)
         browser.find_element_by_link_text("固定资产抵扣明细").click()
         browser.implicitly_wait(10)
         #上传固定资产抵扣明细
@@ -610,15 +333,55 @@ class tax_invoice_line(models.Model):
     is_deductible = fields.Boolean(u'是否抵扣')
     order_id = fields.Many2one('tax.invoice', u'订单编号', index=True,copy=False,
                                required=True, ondelete='cascade')
+    line_ids = fields.One2many('tax.invoice.goods', 'order_id', u'发票明细行',
+                                copy=False)
+    image = fields.Binary(u'图片', attachment=True)
+    img_note = fields.Char(u'验证内容')
+    img_code = fields.Char(u'验证码')
     money_invoice_ids = fields.Many2many('money.invoice',
                                    'invoice_verification',
                                    'money_ids',
                                    'tax_invoice_ids',
                                     u'结算单与认证发票的关系',copy=False)
-
+    state = fields.Selection([('draft', u'草稿'),
+                              ('done', u'已结束')], u'状态', default='draft')
     _sql_constraints = [
         ('unique_start_date', 'unique (invoice_code, invoice_name)', u'发票代码+发票号码不能相同!'),
     ]
+
+    def get_img_code(self):
+        url = "https://inv-veri.chinatax.gov.cn/"
+        browser.get(url)
+        date = self.invoice_open_date.replace('-','')
+        print date
+        browser.find_element_by_id('fpdm').send_keys(self.invoice_code)
+        browser.find_element_by_id('fphm').send_keys(self.invoice_name)
+        browser.find_element_by_id('kprq').send_keys(date)
+        browser.find_element_by_id('kjje').send_keys(str(self.invoice_amount))
+        time.sleep(3)
+        imgelement = browser.find_element_by_id("yzm_img")
+        browser.get_screenshot_as_file("./log/jx.png")
+        location = imgelement.location
+        size = imgelement.size
+        coderange = (int(location['x']), int(location['y']), int(location['x'] + size['width']),
+                     int(location['y'] + size['height']))
+        i = Image.open("./log/jx.png")
+        frame4 = i.crop(coderange)
+        frame4.save("./log/jx2.png")
+        imgdata = open('./log/jx2.png', 'rb')
+        img_note = browser.find_element_by_id("yzminfo").text
+        print img_note
+        img_code = base64.encodestring(imgdata.read())
+        self.write({'image': img_code,'img_note':img_note})
+
+    @api.one
+    def to_done(self):
+        browser.find_element_by_id("yzm").send_keys(self.img_code)
+        browser.get_screenshot_as_file("./log/jx3.png")
+        login_button = browser.find_element_by_id("checkfp")
+        login_button.click()
+        time.sleep(300)
+        browser.get_screenshot_as_file("./log/jx4.png")
 
 class create_invoice_line_wizard(models.TransientModel):
     _name = 'create.invoice.line.wizard'
@@ -688,5 +451,18 @@ class create_invoice_line_wizard(models.TransientModel):
             py_date = data
         return py_date
 
+class tax_invoice_goods(models.Model):
+    _name = 'tax.invoice.goods'
+    _description = u'认证发票商品明细'
 
+    order_id = fields.Many2one('tax.invoice.line', u'进项发票编号', index=True, copy=False,
+                               required=True, ondelete='cascade')
+    goods_id = fields.Many2one('goods',
+                               u'商品',
+                               required=True,
+                               ondelete='restrict',
+                               help=u'商品')
+    goods_amount = fields.Float(u'金额', required=True, copy=False)
+    goods_tax = fields.Float(u'税额', required=True, copy=False)
+    goods_qty = fields.Float(u'数量', required=True, copy=False)
 

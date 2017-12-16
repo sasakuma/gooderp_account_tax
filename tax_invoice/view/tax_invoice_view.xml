@@ -32,7 +32,7 @@
                             <field name="tax_amount"/>
                         </group>
                         <notebook>
-                            <page string="发票明细">
+                            <page string="明细发票">
                                 <field name="line_ids" context="{'order': 1}">
                                      <tree string="明细行" editable="bottom">
                                          <field name="partner_code"/>
@@ -47,104 +47,14 @@
 										 <field name="is_deductible"/>
 										 <field name="money_invoice_ids" widget="many2many_tags"
                                                      options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
+                                         <field name='image' widget='image'
+	            						        options='{"preview_image": "image", "width": "100%"}'/>
+                                         <field name="img_note"/>
+                                         <field name="img_code"/>
+                                         <button name='get_img_code' string="取验证码" type="object" />
+                                         <button name='to_done' string="登入" type="object" />
                                      </tree>
                                 </field>
-                            </page>
-                            <page string="进项结构">
-                                <group>
-                                    <group>
-							            <field name="tax_17_amount"/>
-                                        <field name="tax1_amount"/>
-                                    </group>
-                                    <group>
-							            <field name="tax_17"/>
-                                        <field name="tax1"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_13_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_13"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_11_amount"/>
-                                        <field name="tax2_amount"/>
-                                        <field name="tax3_amount"/>
-                                        <field name="tax4_amount"/>
-                                        <field name="tax5_amount"/>
-                                        <field name="tax6_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_11"/>
-                                        <field name="tax2"/>
-                                        <field name="tax3"/>
-                                        <field name="tax4"/>
-                                        <field name="tax5"/>
-                                        <field name="tax6"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_6_amount"/>
-                                        <field name="tax7_amount"/>
-                                        <field name="tax8_amount"/>
-                                        <field name="tax9_amount"/>
-                                        <field name="tax10_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_6"/>
-                                        <field name="tax7"/>
-                                        <field name="tax8"/>
-                                        <field name="tax9"/>
-                                        <field name="tax10"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_5_amount"/>
-                                        <field name="tax11_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_5"/>
-                                        <field name="tax11"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_3_amount"/>
-                                        <field name="tax12_amount"/>
-                                        <field name="tax13_amount"/>
-                                        <field name="tax14_amount"/>
-                                        <field name="tax15_amount"/>
-                                        <field name="tax16_amount"/>
-                                        <field name="tax17_amount"/>
-                                        <field name="tax18_amount"/>
-                                        <field name="tax19_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_3"/>
-                                        <field name="tax12"/>
-                                        <field name="tax13"/>
-                                        <field name="tax14"/>
-                                        <field name="tax15"/>
-                                        <field name="tax16"/>
-                                        <field name="tax17"/>
-                                        <field name="tax18"/>
-                                        <field name="tax19"/>
-                                    </group>
-                                </group>
-                                <group>
-                                    <group>
-                                        <field name="tax_1_5_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="tax_1_5"/>
-                                    </group>
-                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -227,5 +137,64 @@
             view_mode="form"
             target="new"/>
 
+        <!--进项发票tree-->
+        <record id='tax_invoice_line_tree' model='ir.ui.view'>
+			<field name='name'>tax.invoice.line.tree</field>
+			<field name='model'>tax.invoice.line</field>
+			<field name='arch' type='xml'>
+				<tree string='进项发票'>
+                    <field name='partner_id'/>
+                    <field name="invoice_code"/>
+                    <field name='invoice_name'/>
+                    <field name='invoice_amount'/>
+                    <field name='invoice_tax'/>
+                    <field name='invoice_open_date'/>
+                    <field name="state" readonly="1"/>
+				</tree>
+			</field>
+		</record>
+
+		<!--进项发票from-->
+		<record id='tax_invoice_line_form' model='ir.ui.view'>
+			<field name='name'>tax.invoice.line.form</field>
+			<field name='model'>tax.invoice.line</field>
+			<field name='arch' type='xml'>
+                <form string="已认证进项发票">
+	                <header>
+	                	<button name='to_done' type="object" string="同步数据" class="oe_highlight"/>
+                        <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+						<group>
+							<field name='partner_id'/>
+                            <field name="invoice_code"/>
+                            <field name='invoice_name'/>
+                            <field name='invoice_amount'/>
+                            <field name='invoice_tax'/>
+                            <field name='invoice_open_date'/>
+                            <button name='get_img_code' states="draft" string="取验证码" type="object" />
+                        </group>
+                        <group>
+                            <field name='image' widget='image'
+	            						options='{"preview_image": "image", "width": "100%"}'/>
+                            <field name="img_note"/>
+                            <field name="img_code"/>
+                        </group>
+                        <notebook>
+                            <page string="发票明细">
+                                <field name="line_ids" context="{'order': 1}">
+                                     <tree string="明细行" editable="bottom">
+                                         <field name="goods_id"/>
+                                         <field name="goods_amount"/>
+                                         <field name="goods_tax"/>
+                                         <field name="goods_qty"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+			</field>
+		</record>
 	</data>
 </openerp>
