@@ -6,5 +6,335 @@
             <field name="draft_invoice" eval="1" />
         </record>
 
+        <record id="company_01" model="config.province">
+            <field name='name'>91330521704462748F</field>
+            <field name='company_name'>浙江深汇印业有限公司</field>
+        </record>
+        <!--K3导出利润表的EXCEL对应表-->
+        <record id="xx_001_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_001_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>1</field>
+        </record>
+        <record id="xx_002_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_002_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>2</field>
+
+        </record>
+        <record id="xx_003_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_003_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>3</field>
+        </record>
+        <record id="xx_011_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_011_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>11</field>
+        </record>
+        <record id="xx_014_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_014_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>14</field>
+        </record>
+        <record id="xx_018_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_018_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>18</field>
+        </record>
+        <record id="xx_022_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_022_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>22</field>
+        </record>
+        <record id="xx_024_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_024_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>24</field>
+        </record>
+        <record id="xx_031_sns" model='profit.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_031_sns</field>
+            <field name='excel_ncows'>3</field>
+            <field name='excel_ncols'>31</field>
+        </record>
+        <!--K3导出资产负债表的EXCEL对应表-->
+        <record id="xx_001_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_001_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>1</field>
+        </record>
+        <record id="xx_002_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_002_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>2</field>
+        </record>
+        <record id="xx_003_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_003_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>3</field>
+        </record>
+        <record id="xx_004_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_004_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>4</field>
+        </record>
+        <record id="xx_005_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_004_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>5</field>
+        </record>
+        <record id="xx_006_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_001_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>6</field>
+        </record>
+        <record id="xx_007_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_007_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>7</field>
+        </record>
+        <record id="xx_008_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_008_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>8</field>
+        </record>
+        <record id="xx_009_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_009_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>9</field>
+        </record>
+        <record id="xx_010_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_010_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>10</field>
+        </record>
+        <record id="xx_011_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_011_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>11</field>
+        </record>
+        <record id="xx_012_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_012_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>12</field>
+        </record>
+        <record id="xx_013_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_013_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>13</field>
+        </record>
+        <record id="xx_014_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_014_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>14</field>
+        </record>
+
+        <record id="xx_016_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_016_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>17</field>
+        </record>
+        <record id="xx_017_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_017_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>18</field>
+        </record>
+        <record id="xx_018_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_018_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>19</field>
+        </record>
+        <record id="xx_019_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_019_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>20</field>
+        </record>
+        <record id="xx_021_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_021_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>22</field>
+        </record>
+        <record id="xx_022_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_022_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>23</field>
+        </record>
+        <record id="xx_023_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_023_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>24</field>
+        </record>
+        <record id="xx_024_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_024_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>25</field>
+        </record>
+        <record id="xx_025_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_025_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>26</field>
+        </record>
+        <record id="xx_026_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_026_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>27</field>
+        </record>
+        <record id="xx_027_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_027_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>28</field>
+        </record>
+        <record id="xx_028_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_028_qms</field>
+            <field name='excel_ncows'>2</field>
+            <field name='excel_ncols'>29</field>
+        </record>
+
+        <record id="xx_031_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_031_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>1</field>
+        </record>
+        <record id="xx_032_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_032_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>2</field>
+        </record>
+        <record id="xx_033_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_033_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>3</field>
+        </record>
+        <record id="xx_034_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_034_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>4</field>
+        </record>
+        <record id="xx_035_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_035_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>5</field>
+        </record>
+        <record id="xx_036_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_036_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>6</field>
+        </record>
+        <record id="xx_037_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_037_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>7</field>
+        </record>
+        <record id="xx_038_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_038_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>8</field>
+        </record>
+        <record id="xx_039_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_039_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>9</field>
+        </record>
+        <record id="xx_040_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_040_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>10</field>
+        </record>
+
+        <record id="xx_042_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_042_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>14</field>
+        </record>
+        <record id="xx_043_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_043_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>15</field>
+        </record>
+        <record id="xx_044_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_044_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>16</field>
+        </record>
+        <record id="xx_045_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_045_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>17</field>
+        </record>
+
+        <record id="xx_048_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_048_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>26</field>
+        </record>
+        <record id="xx_049_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_049_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>27</field>
+        </record>
+        <record id="xx_050_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_050_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>28</field>
+        </record>
+        <record id="xx_051_qms" model='balance.line'>
+            <field name='order_id' ref='company_01'/>
+            <field name='update_name'>xx_051_qms</field>
+            <field name='excel_ncows'>6</field>
+            <field name='excel_ncols'>29</field>
+        </record>
+
 	</data>
 </openerp>

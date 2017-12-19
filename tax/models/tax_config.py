@@ -21,15 +21,7 @@
 
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError
-import xlrd
-import base64
-import datetime
-import time
-import urllib2
-import requests
-import http.cookiejar as cookielib
-import re
-from PIL import Image
+
 
 
 PROVINCE_TYPE = [('cj_jy', u'上传城建，教育附加，地方教育附加'),
@@ -54,50 +46,48 @@ COUNTRY_TYPE = [('no1', u'运输服务'),
 class config_country(models.Model):
     _name = 'config.country'
 
-    name = fields.Char(u'国税登入名', required=True)
-    password = fields.Char(u'国税密码', required=True)
-    vpdn_name = fields.Char(u'vpdn登入名', required=True)
-    vpdn_password = fields.Char(u'vpdn密码', required=True)
-    billing_password = fields.Char(u'税盘密码')
-    line_ids = fields.One2many('country.line',
-                               'order_id',
-                               u'设置明细行',
-                               copy=False,
-                               required=True)
+    name = fields.Char(u'地税登入名', required=True)
+    password = fields.Char(u'地税密码', required=True)
+    tel_number = fields.Char(u'手机后4位')
 
-class country_line(models.Model):
-    _name = 'country.line'
-
-    order_id = fields.Many2one('config.country', u'单位名称', index=True,
-                               required=True, ondelete='cascade')
-
-    name = fields.Selection(COUNTRY_TYPE, u'进项分类',
-                            required=True)
-    category_id = fields.Many2one('core.category', u'产品类别',
-                                  ondelete='restrict',
-                                  domain=[('type', 'in', ['other_pay', 'expense'])],
-                                  required=True)
 
 class config_province(models.Model):
     _name = 'config.province'
 
-    name = fields.Char(u'地税登入名', required=True)
-    password = fields.Char(u'地税密码', required=True)
-    tel = fields.Char(u'手机后4位', required=True)
-    province_url = fields.Char(u'进税登入网址',help=u'网址中去掉/login')
-    line_ids = fields.One2many('province.line',
+    name = fields.Char(u'社会统一编码', required=True)
+    company_name = fields.Char(u'企业名称', required=True)
+    password = fields.Char(u'国税密码', required=True)
+    balance_lins = fields.One2many('balance.line',
                                'order_id',
-                               u'设置明细行',
+                               u'资产负债表',
+                               copy=False,
+                               required=True)
+    profit_lins = fields.One2many('profit.line',
+                               'order_id',
+                               u'利润表',
                                copy=False,
                                required=True)
 
-class province_line(models.Model):
-    _name = 'province.line'
+class balance_line(models.Model):
+    _name = 'balance.line'
 
     order_id = fields.Many2one('config.province', u'单位名称', index=True,
                                required=True, ondelete='cascade')
-    name = fields.Selection(PROVINCE_TYPE, u'上报内容',
-                            required=True)
-    add_url = fields.Char(u'后缀网址',
-                          required=True,
-                          help=u'网址中#后的网址')
+    update_name = fields.Char(u'上传名称',
+                          required=True)
+    excel_ncows = fields.Char(u'EXCEL对应列',
+                          required=True)
+    excel_ncols = fields.Char(u'EXCEL对应行',
+                             required=True)
+
+class profit_lins(models.Model):
+    _name = 'profit.line'
+
+    order_id = fields.Many2one('config.province', u'单位名称', index=True,
+                               required=True, ondelete='cascade')
+    update_name = fields.Char(u'上传名称',
+                          required=True)
+    excel_ncows = fields.Char(u'EXCEL对应列',
+                          required=True)
+    excel_ncols = fields.Char(u'EXCEL对应行',
+                             required=True)
