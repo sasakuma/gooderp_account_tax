@@ -1,4 +1,5 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <openerp>
 	<data>
 
@@ -32,7 +33,7 @@
                             <field name="tax_amount"/>
                         </group>
                         <notebook>
-                            <page string="明细发票">
+                            <page string="发票明细">
                                 <field name="line_ids" context="{'order': 1}">
                                      <tree string="明细行" editable="bottom">
                                          <field name="partner_code"/>
@@ -47,12 +48,6 @@
 										 <field name="is_deductible"/>
 										 <field name="money_invoice_ids" widget="many2many_tags"
                                                      options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
-                                         <field name='image' widget='image'
-	            						        options='{"preview_image": "image", "width": "100%"}'/>
-                                         <field name="img_note"/>
-                                         <field name="img_code"/>
-                                         <button name='get_img_code' string="取验证码" type="object" />
-                                         <button name='to_done' string="登入" type="object" />
                                      </tree>
                                 </field>
                             </page>
@@ -110,91 +105,115 @@
             view_type="form"
             view_mode="form"
             target="new"/>
-
-        <record id="no_deductible_update_form" model="ir.ui.view">
-            <field name="name">no.eductible.update.form</field>
-            <field name="model">no.deductible.update</field>
+        <!--进项明细发票-->
+        <record id="tax_invoice_line_view_form" model="ir.ui.view">
+            <field name="name">tax.invoice.line.form</field>
+            <field name="model">tax.invoice.line</field>
             <field name="arch" type="xml">
-            	<form>
-                    <group>
-						<field name="account"/>
-                        <field name="password"/>
-                    </group>
-                    <footer>
-                        <button name="no_deductible_update"  string="上传" type="object" class="oe_highlight"/>
-                        或者
-                        <button string="取消" class="oe_link" special="cancel"/>
-                    </footer>
-            	</form>
+                <form string="进项明细发票">
+                    <sheet>
+                        <group>
+                            <field name="partner_code"/>
+                            <field name="partner_id"/>
+                            <field name="invoice_code"/>
+                            <field name="invoice_name"/>
+                            <field name="invoice_amount"/>
+                            <field name="invoice_tax"/>
+                            <field name="invoice_open_date"/>
+                            <field name="invoice_confim_date"/>
+                            <field name="tax_rate"/>
+                            <field name="is_deductible"/>
+                            <field name="money_invoice_ids" widget="many2many_tags"
+                                        options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
+                            <field name="is_verified"/>
+                        </group>
+                            <field name="invoice_line_detail" >
+                                <tree string="发票明细行" editable="bottom">
+                                    <field name="product_name"/>
+                                    <field name="product_type"/>
+                                    <field name="product_unit"/>
+                                    <field name="product_count"/>
+                                    <field name="product_price"/>
+                                    <field name="product_amount"/>
+                                    <field name="product_tax_rate"/>
+                                    <field name="product_tax"/>
+                                </tree>
+                            </field>
+                    </sheet>
+                </form>
             </field>
         </record>
 
-        <act_window id="no_deductible_update_action"
-            name="上传不抵扣发票"
-            src_model="tax.invoice"
-            res_model="no.deductible.update"
-            view_type="form"
-            view_mode="form"
-            target="new"/>
-
-        <!--进项发票tree-->
-        <record id='tax_invoice_line_tree' model='ir.ui.view'>
-			<field name='name'>tax.invoice.line.tree</field>
-			<field name='model'>tax.invoice.line</field>
-			<field name='arch' type='xml'>
-				<tree string='进项发票'>
-                    <field name='partner_id'/>
+        <record id="tax_invoice_line_view_tree" model="ir.ui.view">
+            <field name="name">tax.invoice.line.tree</field>
+            <field name="model">tax.invoice.line</field>
+            <field name="arch" type="xml">
+                <tree string="进项明细发票">
+                    <field name="partner_code"/>
+                    <field name="partner_id"/>
                     <field name="invoice_code"/>
+                    <field name="invoice_name"/>
+                    <field name="invoice_amount"/>
+                    <field name="invoice_tax"/>
+                    <field name="invoice_open_date"/>
+                    <field name="invoice_confim_date"/>
+                    <field name="tax_rate"/>
+                    <field name="is_deductible"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="tax_invoice_line_detail_view_form" model="ir.ui.view">
+            <field name="name">tax.invoice.line.detail.form</field>
+            <field name="model">tax.invoice.line.detail</field>
+            <field name="arch" type="xml">
+                <form string="进项明细发票">
+                    <sheet>
+                        <group>
+                            <field name="product_name" />
+                            <field name="product_type" />
+                            <field name="product_unit"/>
+                            <field name="product_count" />
+                            <field name="product_price" />
+                            <field name="product_amount" />
+                            <field name="product_tax_rate" />
+                            <field name="product_tax" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="tax_invoice_line_detail_view_tree" model="ir.ui.view">
+            <field name="name">tax_invoice_line_detail_tree</field>
+            <field name="model">tax.invoice.line.detail</field>
+            <field name="arch" type="xml">
+                <tree string="进项明细发票">
+                     <field name="product_name" />
+                    <field name="product_type" />
+                    <field name="product_unit"/>
+                    <field name="product_count" />
+                    <field name="product_price" />
+                    <field name="product_amount" />
+                    <field name="product_tax_rate" />
+                    <field name="product_tax" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="tax_invoice_line_search_filter" model="ir.ui.view">
+            <field name="name">tax.invoice.line.search.filter</field>
+            <field name="model">tax.invoice.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Tax Invoice">
+                    <field name='partner_id'/>
+                    <field name='invoice_open_date'/>
                     <field name='invoice_name'/>
                     <field name='invoice_amount'/>
                     <field name='invoice_tax'/>
-                    <field name='invoice_open_date'/>
-                    <field name="state" readonly="1"/>
-				</tree>
-			</field>
-		</record>
-
-		<!--进项发票from-->
-		<record id='tax_invoice_line_form' model='ir.ui.view'>
-			<field name='name'>tax.invoice.line.form</field>
-			<field name='model'>tax.invoice.line</field>
-			<field name='arch' type='xml'>
-                <form string="已认证进项发票">
-	                <header>
-	                	<button name='to_done' type="object" string="同步数据" class="oe_highlight"/>
-                        <field name="state" widget="statusbar" readonly="1"/>
-	                </header>
-			    	<sheet>
-						<group>
-							<field name='partner_id'/>
-                            <field name="invoice_code"/>
-                            <field name='invoice_name'/>
-                            <field name='invoice_amount'/>
-                            <field name='invoice_tax'/>
-                            <field name='invoice_open_date'/>
-                            <button name='get_img_code' states="draft" string="取验证码" type="object" />
-                        </group>
-                        <group>
-                            <field name='image' widget='image'
-	            						options='{"preview_image": "image", "width": "100%"}'/>
-                            <field name="img_note"/>
-                            <field name="img_code"/>
-                        </group>
-                        <notebook>
-                            <page string="发票明细">
-                                <field name="line_ids" context="{'order': 1}">
-                                     <tree string="明细行" editable="bottom">
-                                         <field name="goods_id"/>
-                                         <field name="goods_amount"/>
-                                         <field name="goods_tax"/>
-                                         <field name="goods_qty"/>
-                                     </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-			</field>
-		</record>
+                    <filter name="user_id" string="待核验" domain="[('is_verified','=', False)]"/>
+                </search>
+            </field>
+        </record>
 	</data>
 </openerp>

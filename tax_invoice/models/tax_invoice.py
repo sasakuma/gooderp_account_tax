@@ -26,23 +26,27 @@ import xlrd
 import base64
 import datetime
 import time
-import pytesseract
-from PIL import Image
-from PIL import ImageEnhance
+import re
 
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
+#from selenium import webdriver
+#from selenium.webdriver.common.keys import Keys
 
 # 字段只读状态
 READONLY_STATES = {
         'done': [('readonly', True)],
     }
 
+TAX_TYPE = [('17', u'17%税率'),
+            ('13', u'13%税率'),
+            ('11', u'11%税率'),
+            ('6', u'6%税率'),
+            ('5', u'5%税率'),
+            ('3', u'3%税率'),
+            ('1.5', u'1.5%税率'),]
 
 #初始化chrome
-phantomjs_path = r"D:\phantomjs\bin\phantomjs.exe"
-service_log_path = "./log/ghostdriver.log"
-browser = webdriver.PhantomJS(executable_path=phantomjs_path, service_log_path=service_log_path)
+#options = webdriver.ChromeOptions()
+#options.add_argument('--explicitly-allowed-ports=6000,556')
 
 class tax_invoice(models.Model):
     '''税务发票'''
@@ -125,6 +129,7 @@ class tax_invoice(models.Model):
                 money_id.tax_amount = val.get('tax')
             money_id.money_invoice_done()
         self.state = 'done'
+        self.create_input_structure()
 
     #在money_invoice上已经写了是哪几张发票的明细进行匹配发票
     @api.one
@@ -191,109 +196,7 @@ class tax_invoice(models.Model):
 
     @api.one
     def tax_invoice_draft(self):
-        ''' 反审核本期发票,反确认money_invoice '''
         self.state = 'draft'
-
-class no_deductible_update(models.TransientModel):
-    _name = 'no.deductible.update'
-    _description = 'no deductible update'
-    account = fields.Char(u'税号', default=lambda self:self.env['config.country'].search([]).name)
-    password = fields.Char(u'密码', default=lambda self:self.env['config.country'].search([]).password)
-
-
-    def guoshui_login(self):
-        browser = webdriver.Chrome(chrome_options=options)
-        try:
-            browser.get('http://100.0.0.120:6000/dzswj/index-dl.html')
-        except:
-            raise UserError(u'网页打不开，请确认vpdn已拨号')
-        #最高等待10
-        browser.implicitly_wait(10)
-        browser.find_element_by_name("number").send_keys(self.account)
-        browser.find_element_by_name("number").send_keys(Keys.TAB)
-        browser.find_element_by_name("password").send_keys(self.password)
-        browser.implicitly_wait(10)
-        login_button = browser.find_element_by_class_name("login-btn-style")
-        login_button.click()
-        nowhandle = browser.current_window_handle
-        time.sleep(5)
-        #关闭js提示
-        try:
-            browser.switch_to_alert().accept()
-        except:
-            print 'no js windows!'
-        #关闭弹窗
-        try:
-            all_windows = browser.window_handles
-            for windows in all_windows:
-                if windows != nowhandle:
-                    browser.switch_to.window(windows)
-                    browser.close()
-            browser.switch_to.window(nowhandle)
-        except:
-            print 'no new windows open!'
-        browser.find_element_by_class_name("homepage-nav-sbns").click()
-
-        return browser
-
-    @api.one
-    def no_deductible_update(self):
-        browser = self.guoshui_login()
-        browser.implicitly_wait(10)
-        browser.find_element_by_link_text("增值税一般纳税人").click()
-        browser.implicitly_wait(10)
-        #上传不抵扣发票
-        browser.find_element_by_link_text("不抵扣发票").click()
-        browser.implicitly_wait(10)
-        try:
-            if not self.env.context.get('active_id'):
-                return
-            tax_invoice = self.env['tax.invoice'].browse(self.env.context.get('active_id'))
-            i = 0
-            for line in tax_invoice.line_ids:
-                if line.is_deductible:
-                    i += 1
-                    update_code = browser.find_element_by_name('B_FPDM_%s'%int(i))
-                    update_name = browser.find_element_by_name('B_FPHM_%s'%int(i))
-                    update_code.send_keys(line.invoice_code)
-                    browser.implicitly_wait(10)
-                    update_name.send_keys(line.invoice_name)
-                    browser.implicitly_wait(10)
-            browser.find_element_by_link_text("提交").click()
-            browser.implicitly_wait(10)
-            browser.switch_to_alert().accept()
-        except:
-            browser.switch_to_alert().accept()
-        #确认抵扣联明细
-        browser.find_element_by_link_text("抵扣联明细").click()
-        browser.implicitly_wait(10)
-        try:
-            browser.find_element_by_link_text("发票数据下载").click()
-            browser.implicitly_wait(10)
-            total2 = browser.find_element_by_name("hj_se_se").get_attribute('value')
-            browser.implicitly_wait(10)
-            print total2,tax_invoice.tax_amount
-            if float(total2) == tax_invoice.tax_amount:
-                browser.find_element_by_link_text("确认提交").click()
-                browser.implicitly_wait(10)
-            else:
-                raise UserError(u'与国税不一致')
-        except:
-            browser.find_element_by_link_text("返回").click()
-            browser.find_element_by_link_text("增值税一般纳税人").click()
-            browser.implicitly_wait(10)
-        browser.find_element_by_link_text("固定资产抵扣明细").click()
-        browser.implicitly_wait(10)
-        #上传固定资产抵扣明细
-        browser.find_element_by_name("zj_fphm").send_keys("21230559")
-        browser.find_element_by_xpath("//input[@value='确定']").click()
-        browser.find_element_by_name("zj_jqsbmc").send_keys("测试固定资产")
-        browser.find_element_by_name("zj_gmrq").send_keys("2017-01-02")
-        browser.find_element_by_name("zj_sbdj").send_keys("单价")
-        browser.find_element_by_name("zj_sbsl").send_keys("数量")
-        browser.find_element_by_name("zj_sbje").send_keys("金额")
-        browser.find_element_by_name("zj_dkse").send_keys("税额")
-        browser.find_element_by_link_text("提交").click()
 
 class partner(models.Model):
     _inherit = 'partner'
@@ -307,6 +210,8 @@ class money_invoice(models.Model):
 class tax_invoice_line(models.Model):
     _name = 'tax.invoice.line'
     _description = u'认证发票明细'
+
+    _rec_name='invoice_name'
 
     @api.onchange('invoice_amount','invoice_tax')
     def tax_import(self):
@@ -333,55 +238,33 @@ class tax_invoice_line(models.Model):
     is_deductible = fields.Boolean(u'是否抵扣')
     order_id = fields.Many2one('tax.invoice', u'订单编号', index=True,copy=False,
                                required=True, ondelete='cascade')
-    line_ids = fields.One2many('tax.invoice.goods', 'order_id', u'发票明细行',
-                                copy=False)
-    image = fields.Binary(u'图片', attachment=True)
-    img_note = fields.Char(u'验证内容')
-    img_code = fields.Char(u'验证码')
     money_invoice_ids = fields.Many2many('money.invoice',
                                    'invoice_verification',
                                    'money_ids',
                                    'tax_invoice_ids',
                                     u'结算单与认证发票的关系',copy=False)
-    state = fields.Selection([('draft', u'草稿'),
-                              ('done', u'已结束')], u'状态', default='draft')
+    is_verified = fields.Boolean(u'已核验')
+    invoice_line_detail=fields.One2many('tax.invoice.line.detail', 'line_id', u'发票明细行',
+                               copy=False)
+
     _sql_constraints = [
         ('unique_start_date', 'unique (invoice_code, invoice_name)', u'发票代码+发票号码不能相同!'),
     ]
 
-    def get_img_code(self):
-        url = "https://inv-veri.chinatax.gov.cn/"
-        browser.get(url)
-        date = self.invoice_open_date.replace('-','')
-        print date
-        browser.find_element_by_id('fpdm').send_keys(self.invoice_code)
-        browser.find_element_by_id('fphm').send_keys(self.invoice_name)
-        browser.find_element_by_id('kprq').send_keys(date)
-        browser.find_element_by_id('kjje').send_keys(str(self.invoice_amount))
-        time.sleep(3)
-        imgelement = browser.find_element_by_id("yzm_img")
-        browser.get_screenshot_as_file("./log/jx.png")
-        location = imgelement.location
-        size = imgelement.size
-        coderange = (int(location['x']), int(location['y']), int(location['x'] + size['width']),
-                     int(location['y'] + size['height']))
-        i = Image.open("./log/jx.png")
-        frame4 = i.crop(coderange)
-        frame4.save("./log/jx2.png")
-        imgdata = open('./log/jx2.png', 'rb')
-        img_note = browser.find_element_by_id("yzminfo").text
-        print img_note
-        img_code = base64.encodestring(imgdata.read())
-        self.write({'image': img_code,'img_note':img_note})
+class tax_invoice_line_detail(models.Model):
+    _name = 'tax.invoice.line.detail'
+    _description = u'认证发票明细行'
+    _rec_name='product_name'
 
-    @api.one
-    def to_done(self):
-        browser.find_element_by_id("yzm").send_keys(self.img_code)
-        browser.get_screenshot_as_file("./log/jx3.png")
-        login_button = browser.find_element_by_id("checkfp")
-        login_button.click()
-        time.sleep(300)
-        browser.get_screenshot_as_file("./log/jx4.png")
+    line_id = fields.Many2one('tax.invoice.line', u'认证发票明细',help=u'认证发票明细',copy=False)
+    product_name = fields.Char(string="货物名称")
+    product_type = fields.Char(string="规格型号")
+    product_unit = fields.Char(string="单位")
+    product_count = fields.Float(string="数量")
+    product_price = fields.Float(string="价格")
+    product_amount = fields.Float(string="金额")
+    product_tax_rate = fields.Float(string="税率")
+    product_tax = fields.Float(string="税额")
 
 class create_invoice_line_wizard(models.TransientModel):
     _name = 'create.invoice.line.wizard'
@@ -422,13 +305,20 @@ class create_invoice_line_wizard(models.TransientModel):
         in_xls_data = {}
         for data in range(0,ncols):
             in_xls_data = list[data]
-            print 'aaaaaa',in_xls_data
             if in_xls_data.get(u'销方税号'):
                 partner_id = self.env['partner'].search([
                                  ('tax_number', '=', in_xls_data.get(u'销方税号'))])
             else:
                 partner_id = self.env['partner'].search([
                                  ('name', '=', in_xls_data.get(u'销方名称'))])
+            if in_xls_data.get(u'发票代码'):
+                code = in_xls_data.get(u'发票代码')
+                is_verified = True
+                if len(code) == 10:
+                    b = code[7:8]
+                    if b == '1' or b == '5':
+                        is_verified = False
+
             self.env['tax.invoice.line'].create({
                 'partner_code': str(in_xls_data.get(u'销方税号')),
                 'partner_id': partner_id.id,
@@ -440,6 +330,7 @@ class create_invoice_line_wizard(models.TransientModel):
                 'invoice_confim_date': self.excel_date(in_xls_data.get(u'认证时间') or in_xls_data.get(u'确认时间')),
                 'order_id':invoice_id.id,
                 'tax_rate':float(in_xls_data.get(u'税额'))/float(in_xls_data.get(u'金额'))*100,
+                'is_verified': is_verified,
             })
 
     def excel_date(self,data):
@@ -450,19 +341,3 @@ class create_invoice_line_wizard(models.TransientModel):
         else:
             py_date = data
         return py_date
-
-class tax_invoice_goods(models.Model):
-    _name = 'tax.invoice.goods'
-    _description = u'认证发票商品明细'
-
-    order_id = fields.Many2one('tax.invoice.line', u'进项发票编号', index=True, copy=False,
-                               required=True, ondelete='cascade')
-    goods_id = fields.Many2one('goods',
-                               u'商品',
-                               required=True,
-                               ondelete='restrict',
-                               help=u'商品')
-    goods_amount = fields.Float(u'金额', required=True, copy=False)
-    goods_tax = fields.Float(u'税额', required=True, copy=False)
-    goods_qty = fields.Float(u'数量', required=True, copy=False)
-
