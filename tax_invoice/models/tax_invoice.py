@@ -131,6 +131,18 @@ class tax_invoice(models.Model):
         self.state = 'done'
         self.create_input_structure()
 
+    #引入EXCEL的wizard的button
+    @api.multi
+    def button_excel(self):
+        return {
+            'name': u'引入excel',
+            'view_mode': 'form',
+            'view_type': 'form',
+            'res_model': 'create.invoice.line.wizard',
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
+
     #在money_invoice上已经写了是哪几张发票的明细进行匹配发票
     @api.one
     def tax_invoice_money(self):
