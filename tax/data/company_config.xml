@@ -336,5 +336,360 @@
             <field name='excel_ncols'>29</field>
         </record>
 
+        <!--增加科目-->
+        <record id="account_goods" model='finance.account'>
+            <field name='code'>140501</field>
+            <field name='name'>库存商品-国内销售</field>
+            <field name='costs_types'>assets</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="account_goods_out" model='finance.account'>
+            <field name='code'>140502</field>
+            <field name='name'>库存商品-国外销售</field>
+            <field name='costs_types'>assets</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="account_ar" model='finance.account'>
+            <field name='code'>112201</field>
+            <field name='name'>应收账款-国内</field>
+            <field name='costs_types'>assets</field>
+            <field name='balance_directions'>in</field>
+            <field name='auxiliary_financing'>customer</field>
+        </record>
+        <record id="account_ar_out" model='finance.account'>
+            <field name='code'>112202</field>
+            <field name='name'>应收账款-国外</field>
+            <field name='costs_types'>assets</field>
+            <field name='balance_directions'>in</field>
+            <field name='auxiliary_financing'>customer</field>
+        </record>
+        <record id='small_business_chart5603004' model='finance.account'>
+            <field name='code'>5603004</field>
+            <field name='name'>财务费用-利息支出</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="small_business_chart400100101" model='finance.account'>
+            <field name='code'>400100101</field>
+            <field name='name'>生产成本-原材料</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart400100102" model='finance.account'>
+            <field name='code'>400100102</field>
+            <field name='name'>生产成本-工人工资</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart400100103" model='finance.account'>
+            <field name='code'>400100103</field>
+            <field name='name'>生产成本-临时工工资</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart400100104" model='finance.account'>
+            <field name='code'>400100104</field>
+            <field name='name'>生产成本-制造费用</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5602023' model='finance.account'>
+            <field name='code'>5602023</field>
+            <field name='name'>管理费用-工资</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='account_expense_sale22' model='finance.account'>
+            <field name='code'>560122</field>
+            <field name='name'>销售费用-工资</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart410102" model='finance.account'>
+            <field name='code'>410102</field>
+            <field name='name'>制造费用-工资</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart410103" model='finance.account'>
+            <field name='code'>410103</field>
+            <field name='name'>制造费用-水费</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart410104" model='finance.account'>
+            <field name='code'>410104</field>
+            <field name='name'>制造费用-电费</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart410105" model='finance.account'>
+            <field name='code'>410105</field>
+            <field name='name'>制造费用-加工费</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart410106" model='finance.account'>
+            <field name='code'>410106</field>
+            <field name='name'>制造费用-修理</field>
+            <field name='costs_types'>cost</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="account_income" model='finance.account'>
+            <field name='code'>5001001</field>
+            <field name='name'>主营业务收入-内销</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="account_income002" model='finance.account'>
+            <field name='code'>5001002</field>
+            <field name='name'>主营业务收入-外销</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="account_income003" model='finance.account'>
+            <field name='code'>5001003</field>
+            <field name='name'>主营业务收入-补差</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="small_business_chart5051" model='finance.account'>
+            <field name='code'>5051001</field>
+            <field name='name'>其他业务收入-销售原材料</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id="small_business_chart5051002" model='finance.account'>
+            <field name='code'>5051002</field>
+            <field name='name'>其他业务收入-加工费</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <record id='account_cost' model='finance.account'>
+            <field name='code'>5401001</field>
+            <field name='name'>主营业务成本-内销</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='account_cost002' model='finance.account'>
+            <field name='code'>5401001</field>
+            <field name='name'>主营业务成本-外销</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5402' model='finance.account'>
+            <field name='code'>5402001</field>
+            <field name='name'>其他业务成本-销售原材料</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5402002' model='finance.account'>
+            <field name='code'>5402002</field>
+            <field name='name'>其他业务成本-加工费</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403' model='finance.account'>
+            <field name='code'>5403001</field>
+            <field name='name'>营业税金及附加-城市维护建设税</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403002' model='finance.account'>
+            <field name='code'>5403002</field>
+            <field name='name'>营业税金及附加-教育费附加</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403003' model='finance.account'>
+            <field name='code'>5403003</field>
+            <field name='name'>营业税金及附加-地方教育费附加</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5403004' model='finance.account'>
+            <field name='code'>5403004</field>
+            <field name='name'>营业税金及附加-印花税</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5711002' model='finance.account'>
+            <field name='code'>5711002</field>
+            <field name='name'>营业外支出-捐赠支出</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id='small_business_chart5711003' model='finance.account'>
+            <field name='code'>5711003</field>
+            <field name='name'>营业外支出-罚没支出</field>
+            <field name='costs_types'>out</field>
+            <field name='balance_directions'>in</field>
+        </record>
+        <record id="small_business_chart5301002" model='finance.account'>
+            <field name='code'>5701002</field>
+            <field name='name'>营业外收入-政府补助利得</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
+        <!--增加类别-->
+        <record id="domestic_supplier" model="core.category">
+            <field name="name">国内供应商</field>
+            <field name="type">supplier</field>
+            <field name="account_id" ref="finance.account_ap"/>
+            <field name='note'>默认供应商类别</field>
+        </record>
+        <record id="domestic_customer" model="core.category">
+            <field name="name">国内客户</field>
+            <field name="type">customer</field>
+            <field name="account_id" ref="account_ar"/>
+            <field name='note'>默认客户类别</field>
+        </record>
+        <record id="domestic_out_customer" model="core.category">
+            <field name="name">国外客户</field>
+            <field name="type">customer</field>
+            <field name="account_id" ref="account_ar_out"/>
+        </record>
+        <record id="base_sell_goods_type" model="core.category">
+            <field name="name">国内销售产品</field>
+            <field name="type">goods</field>
+            <field name="account_id" ref="account_goods"/>
+            <field name='note'>默认商品类别</field>
+        </record>
+        <record id="base_buy_goods_type" model="core.category">
+            <field name="name">原材料</field>
+            <field name="type">goods</field>
+            <field name="account_id" ref="finance.small_business_chart1403"/>
+        </record>
+        <record id="base_sell_out_goods_type" model="core.category">
+            <field name="name">国外销售产品</field>
+            <field name="type">goods</field>
+            <field name="account_id" ref="account_goods_out"/>
+        </record>
+        <record id="cost_freight" model="core.category">
+            <field name="name">运费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.account_expense_sale15"/>
+        </record>
+        <record id="cost_office_expenses" model="core.category">
+            <field name="name">办公费用</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602009"/>
+        </record>
+        <record id="cost_business_entertainment" model="core.category">
+            <field name="name">业务招待费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602004"/>
+        </record>
+        <record id="cost_small_business_chart5602003" model="core.category">
+            <field name="name">咨询顾问费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602003"/>
+        </record>
+        <record id="cost_small_business_chart5602005" model="core.category">
+            <field name="name">广告费和业务宣传费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602005"/>
+        </record>
+        <record id="cost_small_business_chart5602013" model="core.category">
+            <field name="name">差旅费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602013"/>
+        </record>
+        <record id="cost_small_business_chart5603001" model="core.category">
+            <field name="name">手续及维护年费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5603001"/>
+        </record>
+        <record id="cost_small_business_chart5603004" model="core.category">
+            <field name="name">利息支出</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="small_business_chart5603004"/>
+        </record>
+        <record id="cost_small_business_chart2221002" model="core.category">
+            <field name="name">交增值税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221002"/>
+        </record>
+        <record id="cost_small_business_chart2221017" model="core.category">
+            <field name="name">交地方教育附加</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221017"/>
+        </record>
+        <record id="cost_small_business_chart2221007" model="core.category">
+            <field name="name">交城建税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221007"/>
+        </record>
+        <record id="cost_small_business_chart2221008" model="core.category">
+            <field name="name">交房产税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221008"/>
+        </record>
+        <record id="cost_small_business_chart2221009" model="core.category">
+            <field name="name">交土地使用税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221009"/>
+        </record>
+        <record id="cost_small_business_chart2221011" model="core.category">
+            <field name="name">交个人所得税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221011"/>
+        </record>
+        <record id="cost_small_business_chart2221012" model="core.category">
+            <field name="name">交教育附加</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221012"/>
+        </record>
+        <record id="cost_small_business_chart2221018" model="core.category">
+            <field name="name">交印花税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221018"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="cost_small_business_chart2221003" model="core.category">
+            <field name="name">交营业税</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart2221003"/>
+        </record>
+        <record id="collar_material" model="core.category">
+            <field name="name">领材料</field>
+            <field name="type">finance</field>
+            <field name="account_id" ref="small_business_chart400100101"/>
+        </record>
+        <!--增加职位-->
+        <record id="worker" model="staff.job">
+            <field name="name">工人</field>
+            <field name="account_id" ref="small_business_chart410102"/>
+        </record>
+        <record id="seller" model="staff.job">
+            <field name="name">销售</field>
+            <field name="account_id" ref="account_expense_sale22"/>
+        </record>
+        <record id="manager" model="staff.job">
+            <field name="name">管理</field>
+            <field name="account_id" ref="small_business_chart5602023"/>
+        </record>
+        <!--修改系统默认小数位数-->
+        <record id='core.decimal_quantity' model="decimal.precision">
+            <field name="digits" eval="3"/>
+        </record>
+        <record id='core.decimal_price' model="decimal.precision">
+            <field name="digits" eval="7"/>
+        </record>
+
 	</data>
 </openerp>

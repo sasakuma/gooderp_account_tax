@@ -91,3 +91,11 @@ class profit_lins(models.Model):
                           required=True)
     excel_ncols = fields.Char(u'EXCEL对应行',
                              required=True)
+
+class partner(models.Model):
+    _inherit = 'partner'
+    computer_import = fields.Boolean(u'系统创建',default= False)
+
+class goods(models.Model):
+    _inherit = 'goods'
+    computer_import = fields.Boolean(u'系统创建',default= False)
