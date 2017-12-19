@@ -86,27 +86,4 @@
             target="new"/>
 	</data>
 
-    <!--继承partner,添加系统自我增加-->
-        <record id="partner_form_computer_import_inherit" model="ir.ui.view">
-            <field name="name">partner_form_computer_import_inherit</field>
-            <field name="model">partner</field>
-            <field name='inherit_id' ref='core.customer_address_form' />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='code']" position="after">
-                    <field name="computer_import" required="1"/>
-				</xpath>
-            </field>
-        </record>
-    <!--继承goods,添加系统自我增加-->
-        <record id="goods_form_computer_import_inherit" model="ir.ui.view">
-            <field name="name">goods_form_computer_import_inherit</field>
-            <field name="model">goods</field>
-            <field name='inherit_id' ref='goods.goods_form' />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='not_saleable']" position="after">
-                    <field name="computer_import" required="1"/>
-				</xpath>
-            </field>
-        </record>
-
 </openerp>

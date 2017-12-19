@@ -15,7 +15,6 @@
         'view/sale_invoice_action.xml',
         'view/sale_invoice_menu.xml',
         'security/ir.model.access.csv',
-        'data/base_data.xml',
     ],
     'demo': [
     ],

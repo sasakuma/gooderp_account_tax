@@ -295,10 +295,4 @@ class create_slae_invoice_wizard(models.TransientModel):
             py_date = data
         return py_date
 
-class partner(models.Model):
-    _inherit = 'partner'
-    computer_import = fields.Boolean(u'系统创建',default= False)
 
-class goods(models.Model):
-    _inherit = 'goods'
-    computer_import = fields.Boolean(u'系统创建',default= False)
