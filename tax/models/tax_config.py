@@ -55,8 +55,8 @@ class config_province(models.Model):
     _name = 'config.province'
 
     name = fields.Char(u'社会统一编码', required=True)
-    company_name = fields.Char(u'企业名称', required=True)
-    password = fields.Char(u'国税密码', required=True)
+    company_name = fields.Char(u'企业名称')
+    password = fields.Char(u'国税密码')
     balance_lins = fields.One2many('balance.line',
                                'order_id',
                                u'资产负债表',
