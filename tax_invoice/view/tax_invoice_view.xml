@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <openerp>
 	<data>
-
 		<!--已认证发票tree-->
         <record id='tax_invoice_tree' model='ir.ui.view'>
 			<field name='name'>tax.invoice.tree</field>
@@ -23,6 +21,7 @@
                 <form string="已认证发票">
 	                <header>
                         <button name='tax_invoice_money' states="draft" string="匹配" type="object" class="oe_highlight"/>
+                        <button name='invoice_to_buy' states="draft" string="反推订单" type="object" class="oe_highlight"/>
 	                	<button name='tax_invoice_done' states="draft" string="确认" type="object" class="oe_highlight"/>
 	                	<button name='tax_invoice_draft' states="done" string="反确认" type="object" />
 	                    <field name="state" widget="statusbar" readonly="1"/>
@@ -56,6 +55,7 @@
 										 <field name="invoice_confim_date"/>
 										 <field name="tax_rate"/>
 										 <field name="is_deductible"/>
+                                         <field name="buy_id"/>
 										 <field name="money_invoice_ids" widget="many2many_tags"
                                                      options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
                                      </tree>
@@ -131,6 +131,8 @@
                             <field name="invoice_name"/>
                             <field name="invoice_amount"/>
                             <field name="invoice_tax"/>
+                        </group>
+                        <group>
                             <field name="invoice_open_date"/>
                             <field name="invoice_confim_date"/>
                             <field name="tax_rate"/>
@@ -138,6 +140,18 @@
                             <field name="money_invoice_ids" widget="many2many_tags"
                                         options="{'no_create':True}" domain="[('tax_invoice_date', '=', False)]"/>
                             <field name="is_verified"/>
+                        </group>
+                        <div class="oe_edit_only">
+                            <group>
+                            <button name='get_img_code' string="取验证码" type="object" />
+                            <button name='to_verified' string="同步数据" type="object" />
+                            </group>
+                        </div>
+                        <group>
+                            <field name='image' widget='image'
+	            						options='{"preview_image": "image", "width": "100%"}'/>
+                            <field name="img_note" readonly="1"/>
+                            <field name="img_code"/>
                         </group>
                             <field name="invoice_line_detail" >
                                 <tree string="发票明细行" editable="bottom">
