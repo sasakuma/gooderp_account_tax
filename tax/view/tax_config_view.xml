@@ -88,7 +88,7 @@
                 </form>
 			</field>
 		</record>
-        <!--继承partner,添加系统自我增加-->
+        <!--继承partner,客户添加系统自我增加-->
         <record id="partner_form_computer_import_inherit" model="ir.ui.view">
             <field name="name">partner_form_computer_import_inherit</field>
             <field name="model">partner</field>
@@ -99,6 +99,18 @@
 				</xpath>
             </field>
         </record>
+
+        <record id="supplier_address_formr_import_inherit" model="ir.ui.view">
+            <field name="name">supplier_address_form_import_inherit</field>
+            <field name="model">partner</field>
+            <field name='inherit_id' ref='core.supplier_address_form' />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tax_rate']" position="after">
+                    <field name="computer_import" required="1"/>
+				</xpath>
+            </field>
+        </record>
+
     <!--继承goods,添加系统自我增加-->
         <record id="goods_form_computer_import_inherit" model="ir.ui.view">
             <field name="name">goods_form_computer_import_inherit</field>
@@ -106,6 +118,7 @@
             <field name='inherit_id' ref='goods.goods_form' />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='not_saleable']" position="after">
+                    <field name="tax_number"/>
                     <field name="computer_import" required="1"/>
 				</xpath>
             </field>
