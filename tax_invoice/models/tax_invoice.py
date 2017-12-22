@@ -455,17 +455,15 @@ class create_invoice_line_wizard(models.TransientModel):
                     b = code[7:8]
                     if b == '1' or b == '5':
                         is_verified = False
-            '''
             if not partner_id.id:
                 partner_id = self.env['partner'].create({
                     'name': in_xls_data.get(u'销方名称'),
                     'main_mobile': in_xls_data.get(u'销方税号'),
-                    'tax_num': in_xls_data.get(u'销方税号'),
+                    'tax_number': in_xls_data.get(u'销方税号'),
                     's_category_id': self.env['core.category'].search([
                         '&', ('type', '=', 'supplier'), ('note', '=', u'默认供应商类别')]).id,
                     'computer_import': True,
                 })
-            '''
             self.env['tax.invoice.line'].create({
                 'partner_code': str(in_xls_data.get(u'销方税号')),
                 'partner_id': partner_id.id,
