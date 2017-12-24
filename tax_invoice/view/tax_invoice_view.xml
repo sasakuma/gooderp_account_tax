@@ -67,18 +67,6 @@
 			</field>
 		</record>
 
-        <!--继承供应商form,添加税号信息-->
-        <record id="supplier_tax_number_form_inherit" model="ir.ui.view">
-            <field name="name">supplier_tax_number_form_inherit</field>
-            <field name="model">partner</field>
-            <field name='inherit_id' ref='core.supplier_address_form' />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='code']" position="after">
-                    <field name="tax_number" required="1"/>
-				</xpath>
-            </field>
-        </record>
-
         <!--继承money_invoice,添加认证日期信息-->
         <record id="tax_invoiced_date_form_inherit" model="ir.ui.view">
             <field name="name">tax_invoiced_date_form_inherit</field>
@@ -149,7 +137,7 @@
                         </div>
                         <group>
                             <field name='image' widget='image'
-	            						options='{"preview_image": "image", "width": "100%"}'/>
+	            						options='{"preview_image": "image", "width": "100%"}' width="180" height="70"/>
                             <field name="img_note" readonly="1"/>
                             <field name="img_code"/>
                         </group>

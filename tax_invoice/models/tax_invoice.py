@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    OpenERP, Open Source Management Solution
-#    Copyright (C) 2016  开阖软件(<http://www.osbzr.com>).
+#    Copyright (C) 2016  德清武康开源软件().
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,12 @@ import xlrd
 import base64
 import datetime
 import time
+import random
 import re
 from PIL import Image
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+
 
 # 字段只读状态
 READONLY_STATES = {
@@ -83,34 +85,8 @@ class tax_invoice(models.Model):
     @api.one
     def invoice_to_buy(self):
         for i in self.line_ids:
-            buy_id = self.env['buy.order'].create({
-                'partner_id': i.partner_id.id,
-                'date': i.invoice_open_date,
-                'planned_date': i.invoice_open_date,
-                'warehouse_dest_id': self.env['warehouse'].search([('type', '=', 'stock')]).id,
-            })
-            if i.invoice_line_detail:
-                for lines in i.line_ids:
-                    goods_id = self.env['goods'].search([('name', '=', lines.product_name)])
-                    self.env['buy.order.line'].create({
-                        'goods_id':goods_id.id,
-                        'order_id':buy_id.id,
-                        'uom_id':goods_id.uom_id.id,
-                        'quantity':lines.product_count,
-                        'price':lines.product_price,
-                        'price_taxed':round(lines.product_price*(1+lines.product_tax_rate/100),2),
-                        'amount':lines.product_amount,
-                        'tax_rate':lines.product_tax_rate,
-                        'tax_amount':lines.product_tax,
-                    })
-                self.buy_id = buy_id
-                buy_id.buy_order_done()
-                delivery_id = self.env['buy.receipt'].search([
-                    ('order_id', '=', buy_id.id)])
-                delivery_id.buy_receipt_done()
-                invoice_id = self.env['money.invoice'].search([
-                    ('name', '=', delivery_id.name)])
-                invoice_id.bill_number = i.invoice_name
+            if i.is_verified:
+                i.to_buy()
 
     #结束本期发票，然后确认money_invoice
     @api.one
@@ -245,10 +221,6 @@ class tax_invoice(models.Model):
     def tax_invoice_draft(self):
         self.state = 'draft'
 
-class partner(models.Model):
-    _inherit = 'partner'
-    tax_number = fields.Char(u'税号', copy=False)
-
 class money_invoice(models.Model):
     _inherit = 'money.invoice'
     tax_invoice_date = fields.Date(string=u'认证日期',
@@ -257,21 +229,7 @@ class money_invoice(models.Model):
 class tax_invoice_line(models.Model):
     _name = 'tax.invoice.line'
     _description = u'认证发票明细'
-
     _rec_name='invoice_name'
-
-    @api.onchange('invoice_amount','invoice_tax')
-    def tax_import(self):
-        if self.invoice_amount:
-            self.tax_rate = self.invoice_tax/self.invoice_amount*100
-
-    @api.onchange('partner_code')
-    def get_partner_id(self):
-        if self.partner_code:
-            self.partner_id = self.env['partner'].search([
-                                 ('tax_number', '=', self.partner_code)])
-        else:
-            raise UserError(u'供应商中察找不到相应税号！')
 
     partner_code = fields.Char(u'供应商税号',copy=False)
     partner_id = fields.Many2one('partner', u'供应商',help=u'供应商',copy=False)
@@ -303,7 +261,7 @@ class tax_invoice_line(models.Model):
     _sql_constraints = [
         ('unique_start_date', 'unique (invoice_code, invoice_name)', u'发票代码+发票号码不能相同!'),
     ]
-
+    #取验证码
     def get_img_code(self):
         global browser
         if not browser:
@@ -325,7 +283,7 @@ class tax_invoice_line(models.Model):
         #取图片说明
         img_note = browser.find_element_by_id("yzminfo").text
         self.write({'image': img_code,'img_note':img_note})
-
+    #传验证码取得明细
     def to_verified(self):
         if not browser:
             raise UserError(u'请重新取验证码')
@@ -349,11 +307,9 @@ class tax_invoice_line(models.Model):
             tr_line = browser.find_elements_by_xpath("//tr [@id='tab_head_mx']/../tr")
             for tr in tr_line[1:-3]:
                 # 将每一个tr的数据根据td查询出来，返回结果为list对象,第一行和最后三行不要
-                print tr.text
                 table_td_list = tr.find_elements_by_tag_name("td")
                 row_list = []
                 for td in table_td_list:  # 遍历每一个td
-                    print td.text
                     row_list.append(td.text)  # 取出表格的数据，并放入行列表里
                 self.env['tax.invoice.line.detail'].create({
                     'line_id':self.id,
@@ -388,7 +344,65 @@ class tax_invoice_line(models.Model):
                     'product_tax': row_list[-1] or '0',
                 })
         self.write({'is_verified': 1})
+        browser.close()
+        global browser
+        browser = False
 
+    def to_buy(self):
+        if self.partner_id.s_category_id.note == u'默认供应商类别':
+            # 随机取0-15中整数，让订单日期在发票日期前20-35天内变化
+            date = datetime.datetime.strptime(self.invoice_open_date, '%Y-%m-%d') - datetime.timedelta(days = random.randint(0, 15) + 20)
+            buy_id = self.env['buy.order'].create({
+                'partner_id': self.partner_id.id,
+                'date': date,
+                'planned_date': self.invoice_open_date,
+                'warehouse_dest_id': self.env['warehouse'].search([('type', '=', 'stock')]).id,
+            })
+            if self.invoice_line_detail:
+                for lines in self.invoice_line_detail:
+                    #新增计量单位
+                    uom_id = self.env['uom'].search([('name', '=', lines.product_unit)])
+                    if not uom_id:
+                        uom_id = self.env['uom'].create({
+                            'name': lines.product_unit,
+                            'active': 1})
+                    # 新增商品单位
+                    goods_id = self.env['goods'].search([('name', '=', lines.product_name)])
+                    if not goods_id:
+                        goods_id = self.env['goods'].create({
+                            'name': lines.product_name,
+                            'uom_id': uom_id.id,
+                            'uos_id': uom_id.id,
+                            # 'tax_rate': float(in_xls_data.get(u'税率')),
+                            'category_id': self.env['core.category'].search([
+                                '&', ('type', '=', 'goods'), ('note', '=', u'默认采购商品类别')]).id,
+                            'computer_import': True
+                        })
+                        #TODO 如果采购发票有属性,可将属性也自动增加到产品中去
+                    self.env['buy.order.line'].create({
+                        'goods_id': goods_id.id,
+                        'order_id': buy_id.id,
+                        'uom_id': goods_id.uom_id.id,
+                        'quantity': lines.product_count,
+                        'price': lines.product_price,
+                        'price_taxed': round(lines.product_price * (1 + lines.product_tax_rate / 100), 2),
+                        'amount': lines.product_amount,
+                        'tax_rate': lines.product_tax_rate,
+                        'tax_amount': lines.product_tax,
+                    })
+                self.buy_id = buy_id
+                buy_id.buy_order_done()
+                delivery_id = self.env['buy.receipt'].search([
+                    ('order_id', '=', buy_id.id)])
+                delivery_id.buy_receipt_done()
+                invoice_id = self.env['money.invoice'].search([
+                    ('name', '=', delivery_id.name)])
+                invoice_id.bill_number = self.invoice_name
+        else:
+            #todo 跟据采购服务的商品名称来生成服务供应发票
+            pass
+
+#定意发票明细行
 class tax_invoice_line_detail(models.Model):
     _name = 'tax.invoice.line.detail'
     _description = u'认证发票明细行'
@@ -403,7 +417,7 @@ class tax_invoice_line_detail(models.Model):
     product_amount = fields.Float(u"金额")
     product_tax_rate = fields.Float(u"税率")
     product_tax = fields.Float(u"税额")
-
+#用excel导入认证系统的EXCEL生成月认证发票
 class create_invoice_line_wizard(models.TransientModel):
     _name = 'create.invoice.line.wizard'
     _description = 'Tax Invoice Import'
@@ -443,7 +457,7 @@ class create_invoice_line_wizard(models.TransientModel):
             in_xls_data = list[data]
             if in_xls_data.get(u'销方税号'):
                 partner_id = self.env['partner'].search([
-                                 ('tax_number', '=', in_xls_data.get(u'销方税号'))])
+                                 ('tax_num', '=', in_xls_data.get(u'销方税号'))])
             else:
                 partner_id = self.env['partner'].search([
                                  ('name', '=', in_xls_data.get(u'销方名称'))])
@@ -455,15 +469,33 @@ class create_invoice_line_wizard(models.TransientModel):
                     b = code[7:8]
                     if b == '1' or b == '5':
                         is_verified = False
-            if not partner_id.id:
-                partner_id = self.env['partner'].create({
-                    'name': in_xls_data.get(u'销方名称'),
-                    'main_mobile': in_xls_data.get(u'销方税号'),
-                    'tax_number': in_xls_data.get(u'销方税号'),
-                    's_category_id': self.env['core.category'].search([
-                        '&', ('type', '=', 'supplier'), ('note', '=', u'默认供应商类别')]).id,
-                    'computer_import': True,
-                })
+            #按税率增加新加供应商
+            tax_rate = float(in_xls_data.get(u'税额'))/float(in_xls_data.get(u'金额'))*100
+            if 15 < tax_rate < 18:
+                cailou_partner = 1
+            else:
+                cailou_partner = 0
+            if not partner_id.id :
+                #17%为原材料供应商，非为服务供应商
+                if cailou_partner:
+                    partner_id = self.env['partner'].create({
+                        'name': in_xls_data.get(u'销方名称'),
+                        'main_mobile': in_xls_data.get(u'销方税号'),
+                        'tax_num': in_xls_data.get(u'销方税号'),
+                        's_category_id': self.env['core.category'].search([
+                            '&', ('type', '=', 'supplier'), ('note', '=', u'默认供应商类别')]).id,
+                        'computer_import': True,
+                    })
+                else:
+                    partner_id = self.env['partner'].create({
+                        'name': in_xls_data.get(u'销方名称'),
+                        'main_mobile': in_xls_data.get(u'销方税号'),
+                        'tax_num': in_xls_data.get(u'销方税号'),
+                        's_category_id': self.env['core.category'].search([
+                            '&', ('type', '=', 'supplier'), ('note', '=', u'默认服务供应商类别')]).id,
+                        'computer_import': True,
+                    })
+
             self.env['tax.invoice.line'].create({
                 'partner_code': str(in_xls_data.get(u'销方税号')),
                 'partner_id': partner_id.id,
@@ -476,7 +508,7 @@ class create_invoice_line_wizard(models.TransientModel):
                 'order_id':invoice_id.id,
                 'tax_rate':float(in_xls_data.get(u'税额'))/float(in_xls_data.get(u'金额'))*100,
                 'is_verified': is_verified,
-            })
+                })
 
     def excel_date(self,data):
         #将excel日期改为正常日期

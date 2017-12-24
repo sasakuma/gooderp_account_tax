@@ -7,5 +7,6 @@
 	
         <menuitem id="menu_invoice_line" name="进项明细发票" parent="tax.tax_accounting"
             action="tax_invoice_line_action" sequence="1"/>
+
     </data>
 </openerp>
