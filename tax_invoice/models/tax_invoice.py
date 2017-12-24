@@ -355,7 +355,7 @@ class tax_invoice_line(models.Model):
             buy_id = self.env['buy.order'].create({
                 'partner_id': self.partner_id.id,
                 'date': date,
-                'planned_date': self.invoice_open_date,
+                'planned_date': self.invoice_confim_date,
                 'warehouse_dest_id': self.env['warehouse'].search([('type', '=', 'stock')]).id,
             })
             if self.invoice_line_detail:
