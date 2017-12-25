@@ -287,7 +287,6 @@ class tax_invoice_line(models.Model):
                 'computer_import': True
                 'cost_method':'average',
             })
-            # TODO 如果采购发票有属性,可将属性也自动增加到产品中去
         print goods_id
 
     #取验证码
