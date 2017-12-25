@@ -14,5 +14,11 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="automatic_cost_action" model="ir.actions.act_window">
+            <field name="name">费用自动化设置</field>
+            <field name="res_model">automatic.cost</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 	</data>
 </openerp>

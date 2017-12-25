@@ -118,11 +118,22 @@
             <field name='inherit_id' ref='goods.goods_form' />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='not_saleable']" position="after">
-                    <field name="tax_number"/>
                     <field name="computer_import" required="1"/>
 				</xpath>
             </field>
         </record>
+
+        <!--费用自动化菜单-->
+        <record id='automatic_cost_tree' model='ir.ui.view'>
+			<field name='name'>automatic.cost.tree</field>
+			<field name='model'>automatic.cost</field>
+			<field name='arch' type='xml'>
+				<tree string='地税设置'>
+                    <field name='name'/>
+                    <field name='category_id'/>
+				</tree>
+			</field>
+		</record>
 
 	</data>
 </openerp>

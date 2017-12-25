@@ -538,6 +538,12 @@
             <field name="account_id" ref="finance.account_ap"/>
             <field name='note'>默认供应商类别</field>
         </record>
+        <record id="domestic_fuwu_supplier" model="core.category">
+            <field name="name">国内服务供应商</field>
+            <field name="type">supplier</field>
+            <field name="account_id" ref="finance.account_ap"/>
+            <field name='note'>默认服务供应商类别</field>
+        </record>
         <record id="domestic_customer" model="core.category">
             <field name="name">国内客户</field>
             <field name="type">customer</field>
@@ -553,12 +559,13 @@
             <field name="name">国内销售产品</field>
             <field name="type">goods</field>
             <field name="account_id" ref="account_goods"/>
-            <field name='note'>默认商品类别</field>
+            <field name='note'>默认销售商品类别</field>
         </record>
         <record id="base_buy_goods_type" model="core.category">
             <field name="name">原材料</field>
             <field name="type">goods</field>
             <field name="account_id" ref="finance.small_business_chart1403"/>
+            <field name='note'>默认采购商品类别</field>
         </record>
         <record id="base_sell_out_goods_type" model="core.category">
             <field name="name">国外销售产品</field>
@@ -669,6 +676,11 @@
             <field name="name">领材料</field>
             <field name="type">finance</field>
             <field name="account_id" ref="small_business_chart400100101"/>
+        </record>
+        <record id="Insurance" model="core.category">
+            <field name="name">保险</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602014"/>
         </record>
         <!--增加职位-->
         <record id="worker" model="staff.job">

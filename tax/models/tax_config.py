@@ -22,8 +22,6 @@
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError
 
-
-
 PROVINCE_TYPE = [('cj_jy', u'上传城建，教育附加，地方教育附加'),
                       ('stamp_duty', u'印花税'),
                       ('social_security', u'社保'),
@@ -50,6 +48,13 @@ class config_country(models.Model):
     password = fields.Char(u'地税密码', required=True)
     tel_number = fields.Char(u'手机后4位')
 
+class automatic_cost(models.Model):
+    '''费用自动化基础'''
+    _name = 'automatic.cost'
+    _order = "name"
+
+    name = fields.Char(u"关键字段")
+    category_id = fields.Many2one('core.category', u'关联类别', help=u'用关键字段查找并关联类别', copy=False)
 
 class config_province(models.Model):
     _name = 'config.province'
