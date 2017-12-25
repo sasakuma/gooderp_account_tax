@@ -85,7 +85,7 @@ class tax_invoice(models.Model):
     @api.one
     def invoice_to_buy(self):
         for i in self.line_ids:
-            if i.is_verified:
+            if i.is_verified and not i.buy_id:
                 i.to_buy()
 
     #结束本期发票，然后确认money_invoice
@@ -261,6 +261,35 @@ class tax_invoice_line(models.Model):
     _sql_constraints = [
         ('unique_start_date', 'unique (invoice_code, invoice_name)', u'发票代码+发票号码不能相同!'),
     ]
+
+    # 新增UOM
+    def Adduom(self,uom):
+        if uom:
+            uom_id = self.env['uom'].search([('name', '=', uom)])
+            if not uom_id:
+                uom_id = self.env['uom'].create({
+                    'name': uom,
+                    'active': 1})
+        return uom_id
+
+    #新增产品
+    def Addgoods(self, goods_name,uom_id):
+        print '1'
+        goods_id = self.env['goods'].search([('name', '=', goods_name)])
+        if not goods_id:
+            self.env['goods'].create({
+                'name': goods_name,
+                'uom_id': uom_id.id or '',
+                'uos_id': uom_id.id or '',
+                # 'tax_rate': float(in_xls_data.get(u'税率')),
+                'category_id': self.env['core.category'].search([
+                    '&', ('type', '=', 'goods'), ('note', '=', u'默认采购商品类别')]).id,
+                'computer_import': True
+                'cost_method':'average',
+            })
+            # TODO 如果采购发票有属性,可将属性也自动增加到产品中去
+        print goods_id
+
     #取验证码
     def get_img_code(self):
         global browser
@@ -301,6 +330,7 @@ class tax_invoice_line(models.Model):
             text = browser.find_element_by_id("popup_message").text
             raise UserError(u'提示！%s' % text)
         try:
+            #有清单
             button_mx = browser.find_element_by_id("showmx")
             button_mx.click()
             time.sleep(6)
@@ -322,15 +352,20 @@ class tax_invoice_line(models.Model):
                     'product_tax_rate':row_list[-2].replace('%','') or '0',
                     'product_tax': row_list[-1] or '0',
                 })
+                # 新增计量单位
+                uom = self.Adduom(row_list[-6])
+                # 新增商品单位
+                print row_list[1]
+                self.Addgoods( row_list[1],uom)
+
         except:
+            #无清单
             tr_line = browser.find_elements_by_xpath("//tr [@id='tab_head_zp']/../tr")
             for tr in tr_line[1:-2]:
                 # 将每一个tr的数据根据td查询出来，返回结果为list对象,第一行和最后二行不要
-                print tr.text
                 table_td_list = tr.find_elements_by_tag_name("td")
                 row_list = []
                 for td in table_td_list:  # 遍历每一个td
-                    print td.text
                     row_list.append(td.text)  # 取出表格的数据，并放入行列表里
                 self.env['tax.invoice.line.detail'].create({
                     'line_id':self.id,
@@ -343,12 +378,24 @@ class tax_invoice_line(models.Model):
                     'product_tax_rate':row_list[-2].replace('%',''),
                     'product_tax': row_list[-1] or '0',
                 })
+                # 新增计量单位
+                uom = self.Adduom(row_list[-6])
+                # 新增商品单位
+                print row_list[1]
+                self.Addgoods(row_list[0], uom)
         self.write({'is_verified': 1})
         browser.close()
         global browser
         browser = False
 
     def to_buy(self):
+        ''' 系统创建的客户或产品不能审核
+        if self.partner_id.computer_import:
+            raise UserError(u'系统创建的客户不能审核！')
+        for line in self.line_ids:
+            if line.goods_id.computer_import:
+                raise UserError(u'系统创建的产品不能审核！')
+        '''
         if self.partner_id.s_category_id.note == u'默认供应商类别':
             # 随机取0-15中整数，让订单日期在发票日期前20-35天内变化
             date = datetime.datetime.strptime(self.invoice_open_date, '%Y-%m-%d') - datetime.timedelta(days = random.randint(0, 15) + 20)
@@ -360,25 +407,7 @@ class tax_invoice_line(models.Model):
             })
             if self.invoice_line_detail:
                 for lines in self.invoice_line_detail:
-                    #新增计量单位
-                    uom_id = self.env['uom'].search([('name', '=', lines.product_unit)])
-                    if not uom_id:
-                        uom_id = self.env['uom'].create({
-                            'name': lines.product_unit,
-                            'active': 1})
-                    # 新增商品单位
                     goods_id = self.env['goods'].search([('name', '=', lines.product_name)])
-                    if not goods_id:
-                        goods_id = self.env['goods'].create({
-                            'name': lines.product_name,
-                            'uom_id': uom_id.id,
-                            'uos_id': uom_id.id,
-                            # 'tax_rate': float(in_xls_data.get(u'税率')),
-                            'category_id': self.env['core.category'].search([
-                                '&', ('type', '=', 'goods'), ('note', '=', u'默认采购商品类别')]).id,
-                            'computer_import': True
-                        })
-                        #TODO 如果采购发票有属性,可将属性也自动增加到产品中去
                     self.env['buy.order.line'].create({
                         'goods_id': goods_id.id,
                         'order_id': buy_id.id,
