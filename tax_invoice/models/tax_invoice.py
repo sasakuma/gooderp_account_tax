@@ -50,11 +50,10 @@ READONLY_STATES = {
 firefox_path = r"C:\Program Files (x86)\Mozilla Firefox\geckodriver.exe"
 browser = False
 
+#每月进项发票
 class tax_invoice(models.Model):
-    '''税务发票'''
     _name = 'tax.invoice'
     _order = "name"
-
     name = fields.Many2one(
         'finance.period',
         u'会计期间',
@@ -220,12 +219,12 @@ class tax_invoice(models.Model):
     @api.one
     def tax_invoice_draft(self):
         self.state = 'draft'
-
+#结算单增加认证日期
 class money_invoice(models.Model):
     _inherit = 'money.invoice'
     tax_invoice_date = fields.Date(string=u'认证日期',
                            help=u'发票认证的日期')
-
+#每月进项明细发票
 class tax_invoice_line(models.Model):
     _name = 'tax.invoice.line'
     _description = u'认证发票明细'
@@ -264,6 +263,7 @@ class tax_invoice_line(models.Model):
 
     # 新增UOM
     def Adduom(self,uom):
+        uom_id = ''
         if uom:
             uom_id = self.env['uom'].search([('name', '=', uom)])
             if not uom_id:
@@ -279,12 +279,12 @@ class tax_invoice_line(models.Model):
         if not goods_id:
             self.env['goods'].create({
                 'name': goods_name,
-                'uom_id': uom_id.id or '',
-                'uos_id': uom_id.id or '',
+                'uom_id': uom_id and uom_id.id or '',
+                'uos_id': uom_id and uom_id.id or '',
                 # 'tax_rate': float(in_xls_data.get(u'税率')),
                 'category_id': self.env['core.category'].search([
                     '&', ('type', '=', 'goods'), ('note', '=', u'默认采购商品类别')]).id,
-                'computer_import': True
+                'computer_import': True,
                 'cost_method':'average',
             })
         print goods_id
@@ -328,7 +328,13 @@ class tax_invoice_line(models.Model):
             alert = browser.switch_to_alert()
             text = browser.find_element_by_id("popup_message").text
             raise UserError(u'提示！%s' % text)
+            text.accept()
         try:
+            '''zf = browser.find_element_by_id("icon_zf")
+            if zf:
+                self.write({'is_deductible': 1, 'is_verified': 1})
+                return
+            '''
             #有清单
             button_mx = browser.find_element_by_id("showmx")
             button_mx.click()
@@ -380,8 +386,8 @@ class tax_invoice_line(models.Model):
                 # 新增计量单位
                 uom = self.Adduom(row_list[-6])
                 # 新增商品单位
-                print row_list[1]
-                self.Addgoods(row_list[0], uom)
+                if uom:
+                    self.Addgoods(row_list[0], uom)
         self.write({'is_verified': 1})
         browser.close()
         global browser
@@ -407,6 +413,8 @@ class tax_invoice_line(models.Model):
             if self.invoice_line_detail:
                 for lines in self.invoice_line_detail:
                     goods_id = self.env['goods'].search([('name', '=', lines.product_name)])
+                    if not goods_id:
+                        continue
                     self.env['buy.order.line'].create({
                         'goods_id': goods_id.id,
                         'order_id': buy_id.id,
@@ -429,7 +437,6 @@ class tax_invoice_line(models.Model):
         else:
             #todo 跟据采购服务的商品名称来生成服务供应发票
             pass
-
 #定意发票明细行
 class tax_invoice_line_detail(models.Model):
     _name = 'tax.invoice.line.detail'
