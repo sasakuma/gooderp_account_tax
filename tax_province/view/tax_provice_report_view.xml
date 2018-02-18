@@ -1,26 +1,75 @@
 <?xml version="1.0"?>
 <openerp>
 	<data>
-        <record id="tax_provice_updata_form" model="ir.ui.view">
-            <field name="name">tax.provice.updata.form</field>
-            <field name="model">tax.provice.updata</field>
-            <field name="arch" type="xml">
-            	<form>
-                    <group>
-						<field name="account"/>
-                        <field name="password"/>
-                        <field name="mobile"/>
-                    </group>
-                    <footer>
-                        <button name="tax_provice_update"  string="上传" type="object" class="oe_highlight"/>
-                        或者
-                        <button string="取消" class="oe_link" special="cancel"/>
-                    </footer>
-            	</form>
-            </field>
-        </record>
+        <!--国税上传下载tree-->
+        <record id='provice_up_down_tree' model='ir.ui.view'>
+			<field name='name'>provice.upanddown.tree</field>
+			<field name='model'>provice.upanddown</field>
+			<field name='arch' type='xml'>
+				<tree string='同步地税信息'>
+                    <field name='name'/>
+                    <field name='account'/>
+                    <field name='state'/>
+				</tree>
+			</field>
+		</record>
 
-        <!--地税报表tree-->
+		<!--国税上传下载FORM-->
+		<record id='provice_up_down_form' model='ir.ui.view'>
+			<field name='name'>provice.upanddown.form</field>
+			<field name='model'>provice.upanddown</field>
+			<field name='arch' type='xml'>
+                <form string="上传国税信息">
+	                <header>
+	                	<button name='to_done' states="draft" string="确认" type="object" class="oe_highlight"/>
+	                	<button name='to_draft' states="done" string="反确认" type="object" />
+	                    <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+						<group>
+                            <field name="name"/>
+                            <field name="account"/>
+							<field name="password"/>
+                            <button name='get_img_code' states="draft" string="取验证码" type="object" />
+                        </group>
+                        <group>
+                            <field name='image' widget='image'
+	            						options='{"preview_image": "image", "width": "100%"}'/>
+                            <field name="img_code"/>
+                        </group>
+                        <group>
+                            <field name="excel_profit"/>
+	            			<button name='create_profit_update' states="draft" string="引入利润表" type="object" />
+                        </group>
+                        <group>
+                            <field name="excel_balance"/>
+	            			<button name='create_balance_update' states="draft" string="引入资产负债表" type="object" />
+                        </group>
+                        <notebook>
+                            <page string="利润表上传数据">
+                                <field name="profit_ids">
+                                     <tree string="利润表上传数据" editable="bottom">
+                                         <field name="update_name"/>
+                                         <field name="update_number"/>
+                                     </tree>
+                                </field>
+                            </page>
+                            <page string="资产负债表上传数据">
+                                <field name="balance_ids">
+                                     <tree string="资产负债表上传数据" editable="bottom">
+                                         <field name="update_name"/>
+                                         <field name="update_number"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <field name="note"/>
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
+        <!--地税申报报表tree-->
         <record id='tax_report_tree' model='ir.ui.view'>
 			<field name='name'>tax.report.tree</field>
 			<field name='model'>tax.report</field>
@@ -32,6 +81,7 @@
 			</field>
 		</record>
 
+        <!--地税申报报表FORM-->
         <record id='tax_report_form' model='ir.ui.view'>
 			<field name='name'>tax.report.form</field>
 			<field name='model'>tax.report</field>
@@ -83,16 +133,69 @@
 			</field>
 		</record>
 
-        <!--继承地税设置,添加申报报表关连-->
-        <record id="config_province_form_inherit" model="ir.ui.view">
-            <field name="name">config.province.form.inherit</field>
-            <field name="model">config.province</field>
-            <field name='inherit_id' ref='tax.config_province_form' />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='add_url']" position="after">
-                    <field name="tax_report"/>
-				</xpath>
-            </field>
-        </record>
+        <!--地税下载生成凭证tree-->
+        <record id='provice_get_zjds_tree' model='ir.ui.view'>
+			<field name='name'>tax.get.zjds.tree</field>
+			<field name='model'>tax.get.zjds</field>
+			<field name='arch' type='xml'>
+				<tree string='同步地税信息'>
+                    <field name='name'/>
+                    <field name='account'/>
+                    <field name='state'/>
+				</tree>
+			</field>
+		</record>
+
+        <!--国税上传下载FORM-->
+		<record id='provice_get_zjds_form' model='ir.ui.view'>
+			<field name='name'>tax.get.zjds.form</field>
+			<field name='model'>tax.get.zjds</field>
+			<field name='arch' type='xml'>
+                <form string="上传国税信息">
+	                <header>
+                        <button name='enter_tax' states="draft" string="确认" type="object" class="oe_highlight"/>
+	                    <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+						<group>
+                            <field name="name"/>
+                            <field name="account"/>
+							<field name="password"/>
+                            <field name="tel"/>
+                        </group>
+                        <div class="oe_edit_only">
+                            <group>
+                                <button name='get_img_code' states="draft" string="取验证码" type="object" />
+                                <button name='download_tax' states="draft" string="同步数据" type="object" />
+                            </group>
+                            <group>
+                                <field name='image' widget='image'
+                                            options='{"preview_image": "image", "width": "100%"}'/>
+                                <field name="img_code"/>
+                            </group>
+                        </div>
+                        <field name="note"/>
+                        <notebook>
+                            <page string="需下载数据">
+                                <field name="line_ids">
+                                     <tree string="需下载数据" editable="bottom">
+                                         <field name="debit_account"/>
+                                         <field name="credit_account"/>
+                                         <field name="tax_report"/>
+                                         <field name="tax_select"/>
+                                         <field name="base_amount" readonly="1"/>
+                                         <field name="tax_rate" readonly="1"/>
+                                         <field name="account_amount" readonly="1"/>
+                                         <field name="note" readonly="1"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
 	</data>
 </openerp>

@@ -134,13 +134,13 @@
                             <button name='get_img_code' string="取验证码" type="object" />
                             <button name='to_verified' string="同步数据" type="object" />
                             </group>
+                            <group>
+                                <field name='image' widget='image'
+                                            options='{"preview_image": "image", "width": "100%"}' width="180" height="70"/>
+                                <field name="img_note" readonly="1"/>
+                                <field name="img_code"/>
+                            </group>
                         </div>
-                        <group>
-                            <field name='image' widget='image'
-	            						options='{"preview_image": "image", "width": "100%"}' width="180" height="70"/>
-                            <field name="img_note" readonly="1"/>
-                            <field name="img_code"/>
-                        </group>
                             <field name="invoice_line_detail" >
                                 <tree string="发票明细行" editable="bottom">
                                     <field name="product_name"/>

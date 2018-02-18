@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!--银行明细tree-->
+        <record id='bank_import_tree' model='ir.ui.view'>
+			<field name='name'>bank.import.tree</field>
+			<field name='model'>bank.import</field>
+			<field name='arch' type='xml'>
+				<tree string='银行明细'>
+                    <field name='name'/>
+                    <field name="bank_id"/>
+                    <field name='state'/>
+				</tree>
+			</field>
+		</record>
+		<!--银行明细from-->
+		<record id='bank_import_form' model='ir.ui.view'>
+			<field name='name'>bank.import.form</field>
+			<field name='model'>bank.import</field>
+			<field name='arch' type='xml'>
+                <form string="银行明细">
+	                <header>
+                        <button name='to_money_order' states="draft" string="生成" type="object" class="oe_highlight"/>
+	                    <field name="state" widget="statusbar" readonly="1"/>
+	                </header>
+			    	<sheet>
+                        <div class="oe_button_box" name="button_box">
+                                <button type="object"
+                                        string="引入excel"
+                                        name="button_excel"
+                                        class="oe_stat_button"
+                                        icon="fa-list-alt">
+                                </button>
+                        </div>
+						<group>
+							<field name="name"/>
+                        </group>
+                        <group>
+                            <field name="bank_id"/>
+                        </group>
+                        <notebook>
+                            <page string="银行明细">
+                                <field name="line_ids" context="{'order': 1}">
+                                     <tree string="银行明细行" editable="bottom">
+                                         <field name="partner_id"/>
+                                         <field name="account_number"/>
+                                         <field name="transaction_date"/>
+                                         <field name="debit_amount"/>
+                                         <field name="credit_amount"/>
+                                         <field name="note"/>
+                                         <field name="is_right"/>
+                                         <field name="select_order"/>
+                                     </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+			</field>
+		</record>
+
+        <record id="create_bank_import_line_form" model="ir.ui.view">
+            <field name="name">create_bank_import_line_form</field>
+            <field name="model">create.bank.import.line.wizard</field>
+            <field name="arch" type="xml">
+            	<form>
+            		<group>
+						<field name="excel" string="引入EXCEL创建银行明细"/>
+                    </group>
+                    <footer>
+                        <button name="create_bank_import_line"  string="引入" type="object" class="oe_highlight"/>
+                        或者
+                        <button string="取消" class="oe_link" special="cancel"/>
+                    </footer>
+            	</form>
+            </field>
+        </record>
+	</data>
+</openerp>

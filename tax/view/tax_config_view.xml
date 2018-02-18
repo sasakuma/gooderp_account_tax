@@ -36,6 +36,18 @@
 			</field>
 		</record>
 
+        <!--税编码设置tree-->
+        <record id='tax_category_tree' model='ir.ui.view'>
+			<field name='name'>tax.category.tree</field>
+			<field name='model'>tax.category</field>
+			<field name='arch' type='xml'>
+				<tree string='税率设置'>
+                    <field name='name'/>
+                    <field name='code'/>
+				</tree>
+			</field>
+		</record>
+
         <!--国税设置tree-->
         <record id='config_province_tree' model='ir.ui.view'>
 			<field name='name'>config.province.tree</field>
@@ -131,6 +143,7 @@
 				<tree string='地税设置'>
                     <field name='name'/>
                     <field name='category_id'/>
+                    <field name='account_id'/>
 				</tree>
 			</field>
 		</record>

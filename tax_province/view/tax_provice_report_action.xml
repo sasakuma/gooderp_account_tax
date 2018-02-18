@@ -1,22 +1,37 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <!-- 服务管理 action -->
+        <!-- 国税申报管理 action -->
 
-        <act_window id="tax_provice_updata_action"
-        	name='地税申报上传'
-	        res_model="tax.provice.updata"
-	        multi="True"
-	        view_type="form"
-	        view_mode="form"
-	        target="new"
-	        />
+        <record id="provice_upanddown_action" model="ir.actions.act_window">
+            <field name="name">国税申报管理</field>
+            <field name="res_model">provice.upanddown</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建申报计划，点击取得验证码，填好验证码，上传资产负债表及利润表。
+              </p>
+            </field>
+        </record>
 
 		<!-- 申报表 action -->
         <record id="tax_report_action" model="ir.actions.act_window">
-            <field name="name">地税申报</field>
+            <field name="name">地税申报报表</field>
             <field name="res_model">tax.report</field>
             <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- 地税下载管理 action -->
+
+        <record id="provice_get_zjds_action" model="ir.actions.act_window">
+            <field name="name">地税下载管理</field>
+            <field name="res_model">tax.get.zjds</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                点击创建申报下载计划，点击取得验证码，填好验证码，登入后下载印花税等信息。
+              </p>
+            </field>
         </record>
 
     </data>

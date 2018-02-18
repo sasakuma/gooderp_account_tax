@@ -31,9 +31,9 @@ READONLY_STATES = {
         'to_delivery': [('readonly', True)],
         'done': [('readonly', True)],
     }
-
+#销售发票
 class sale_invoice(models.Model):
-    '''金穗销售发票'''
+
     _name = 'sale.invoice'
     _order = "name"
 
@@ -160,7 +160,7 @@ class sale_invoice(models.Model):
         self.sell_id = False
         sell_id.unlink()
         self.state = 'draft'
-
+#销售发票明细行
 class sale_invoice_line(models.Model):
     _name = 'sale.invoice.line'
     _description = u'导入销售发票明细'
@@ -187,9 +187,8 @@ class sale_invoice_line(models.Model):
                                required=True,
                                ondelete='restrict',
                                help=u'商品')
-
+#导入金穗发票，生成销售发票及明细
 class create_slae_invoice_wizard(models.TransientModel):
-    '''导入金穗发票'''
     _name = 'create.sale.invoice.wizard'
     _description = 'Sale Invoice Import'
 
@@ -208,7 +207,7 @@ class create_slae_invoice_wizard(models.TransientModel):
         ncows = table.nrows
         ncols = table.ncols
         company_tax = table.cell(0,0).value
-        if self.env.user.company_id.tax_number != str(company_tax):
+        if self.env.user.company_id.vat != str(company_tax):
             raise UserError(u'不是同一公司不可以导入！')
         #取得第6行数据
         colnames =  table.row_values(5)
@@ -273,7 +272,7 @@ class create_slae_invoice_wizard(models.TransientModel):
                                  ('name', '=', in_xls_data.get(u'单位'))]).id,
                     #'tax_rate': float(in_xls_data.get(u'税率')),
                     'category_id':self.env['core.category'].search([
-                                 '&',('type', '=', 'goods'),('note', '=', u'默认商品类别')]).id,
+                                 '&',('type', '=', 'goods'),('note', '=', u'默认销售商品类别')]).id,
                     'computer_import':True
                 })
 

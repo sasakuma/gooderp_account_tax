@@ -4,7 +4,9 @@
         <!-- 菜单加入税务模块 -->
         <menuitem id="menu_tax_report" name='税务报表' action="tax_report_action"
             parent="tax.tax_accounting" sequence="0"/>
-        <menuitem id="menu_tax_provice_updata" name='地税上传' action="tax_provice_updata_action"
+        <menuitem id="menu_provice_upanddown" name='国税上传' action="provice_upanddown_action"
+            parent="tax.province_tax_updata" sequence="1"/>
+        <menuitem id="menu_get_zjds" name='地税下载' action="provice_get_zjds_action"
             parent="tax.province_tax_updata" sequence="1"/>
 	</data>
 </openerp>

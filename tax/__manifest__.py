@@ -15,7 +15,8 @@
         'view/tax_config_action.xml',
         'view/tax_config_menu.xml',
         'security/ir.model.access.csv',
-        'data/company_config.xml'
+        'data/company_config.xml',
+        'data/tax_code.xml'
     ],
     'demo': [
     ],

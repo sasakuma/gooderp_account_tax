@@ -329,8 +329,12 @@ class tax_invoice_line(models.Model):
             text = browser.find_element_by_id("popup_message").text
             raise UserError(u'提示！%s' % text)
             text.accept()
+        # 删除旧数据
+        if self.invoice_line_detail:
+            self.invoice_line_detail.unlink()
         try:
-            '''zf = browser.find_element_by_id("icon_zf")
+            '''
+            zf = browser.find_element_by_id("icon_zf")
             if zf:
                 self.write({'is_deductible': 1, 'is_verified': 1})
                 return
@@ -346,9 +350,10 @@ class tax_invoice_line(models.Model):
                 row_list = []
                 for td in table_td_list:  # 遍历每一个td
                     row_list.append(td.text)  # 取出表格的数据，并放入行列表里
+                goods_name = row_list[1].split('*')[-1]
                 self.env['tax.invoice.line.detail'].create({
                     'line_id':self.id,
-                    'product_name': row_list[1],
+                    'product_name': goods_name,
                     'product_type': row_list[2] or '',
                     'product_unit': row_list[-6] or '',
                     'product_count': row_list[-5] or '',
@@ -360,8 +365,7 @@ class tax_invoice_line(models.Model):
                 # 新增计量单位
                 uom = self.Adduom(row_list[-6])
                 # 新增商品单位
-                print row_list[1]
-                self.Addgoods( row_list[1],uom)
+                self.Addgoods( goods_name,uom)
 
         except:
             #无清单
@@ -370,11 +374,17 @@ class tax_invoice_line(models.Model):
                 # 将每一个tr的数据根据td查询出来，返回结果为list对象,第一行和最后二行不要
                 table_td_list = tr.find_elements_by_tag_name("td")
                 row_list = []
+                # 新增商品单位
                 for td in table_td_list:  # 遍历每一个td
                     row_list.append(td.text)  # 取出表格的数据，并放入行列表里
+                # 新增计量单位
+                uom = self.Adduom(row_list[-6])
+                if uom:
+                    goods_name = row_list[0].split('*')[-1]
+                    self.Addgoods(goods_name, uom)
                 self.env['tax.invoice.line.detail'].create({
                     'line_id':self.id,
-                    'product_name': row_list[0],
+                    'product_name': goods_name,
                     'product_type': row_list[1] or '',
                     'product_unit': row_list[-6] or '',
                     'product_count': row_list[-5] or '',
@@ -383,11 +393,7 @@ class tax_invoice_line(models.Model):
                     'product_tax_rate':row_list[-2].replace('%',''),
                     'product_tax': row_list[-1] or '0',
                 })
-                # 新增计量单位
-                uom = self.Adduom(row_list[-6])
-                # 新增商品单位
-                if uom:
-                    self.Addgoods(row_list[0], uom)
+
         self.write({'is_verified': 1})
         browser.close()
         global browser
@@ -496,10 +502,9 @@ class create_invoice_line_wizard(models.TransientModel):
             else:
                 partner_id = self.env['partner'].search([
                                  ('name', '=', in_xls_data.get(u'销方名称'))])
-
+            is_verified = True
             if in_xls_data.get(u'发票代码'):
-                code = in_xls_data.get(u'发票代码')
-                is_verified = True
+                code = str(in_xls_data.get(u'发票代码'))
                 if len(code) == 10:
                     b = code[7:8]
                     if b == '1' or b == '5':
@@ -533,16 +538,16 @@ class create_invoice_line_wizard(models.TransientModel):
 
             self.env['tax.invoice.line'].create({
                 'partner_code': str(in_xls_data.get(u'销方税号')),
-                'partner_id': partner_id.id,
+                'partner_id': partner_id.id or '',
                 'invoice_code': str(in_xls_data.get(u'发票代码')),
                 'invoice_name': str(in_xls_data.get(u'发票号码')),
                 'invoice_amount': float(in_xls_data.get(u'金额')),
                 'invoice_tax': float(in_xls_data.get(u'税额')),
                 'invoice_open_date': self.excel_date(in_xls_data.get(u'开票日期')),
                 'invoice_confim_date': self.excel_date(in_xls_data.get(u'认证时间') or in_xls_data.get(u'确认时间')),
-                'order_id':invoice_id.id,
+                'order_id':invoice_id.id or '',
                 'tax_rate':float(in_xls_data.get(u'税额'))/float(in_xls_data.get(u'金额'))*100,
-                'is_verified': is_verified,
+                'is_verified': is_verified or False,
                 })
 
     def excel_date(self,data):

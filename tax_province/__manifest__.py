@@ -6,7 +6,7 @@
     'category': 'gooderp',
     "description":
     '''
-                        该模块为上传地税申报模块
+                        该模块为下载地税申报生成凭证模块
     ''',
     'version': '11.11',
     'depends': ['base', 'core', 'finance', 'money', 'tax'],

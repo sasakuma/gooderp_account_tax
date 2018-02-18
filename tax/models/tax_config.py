@@ -22,6 +22,12 @@
 from odoo import api, fields, models, tools, _
 from odoo.exceptions import UserError
 
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
+
+
 PROVINCE_TYPE = [('cj_jy', u'上传城建，教育附加，地方教育附加'),
                       ('stamp_duty', u'印花税'),
                       ('social_security', u'社保'),
@@ -55,6 +61,7 @@ class automatic_cost(models.Model):
 
     name = fields.Char(u"关键字段")
     category_id = fields.Many2one('core.category', u'关联类别', help=u'用关键字段查找并关联类别', copy=False)
+    account_id = fields.Many2one('finance.account', u'计提地税科目', copy=False, help=u'遇到会计科目不足时使用补充会计科目完成自动化记帐')
 
 class config_province(models.Model):
     _name = 'config.province'
@@ -101,6 +108,24 @@ class partner(models.Model):
     _inherit = 'partner'
     computer_import = fields.Boolean(u'系统创建',default= False)
 
+class tax_base_category(models.Model):
+    _name = 'tax.base.category'
+
+    name = fields.Char(u'分类', help=u'对应ZZSTSGL')
+
 class goods(models.Model):
     _inherit = 'goods'
     computer_import = fields.Boolean(u'系统创建',default= False)
+
+class tax_category(models.Model):
+    _name = 'tax.category'
+
+    code = fields.Char(u'编号', required=True, help=u'对应SPBM')
+    name = fields.Char(u'名称', required=True, help=u'对应SPMC')
+    print_name = fields.Char(u'打印名称', help=u'对应SPBMJC')
+    superior = fields.Many2one('tax.category', u'上级分类', help=u'上级类别', copy=False)
+    can_use = fields.Boolean(u'可使用')
+    base_category = fields.Many2one('tax.base.category', u'基础类别', help=u'对应ZZSTSGL', copy=False)
+    note = fields.Text(u'备注')
+    help = fields.Text(u'说明')
+    tax_rate = fields.Char(u'税率', help='因为有可能有多个税率在这里面，所以现在很奇怪')
