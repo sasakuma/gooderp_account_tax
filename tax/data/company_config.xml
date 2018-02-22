@@ -531,6 +531,12 @@
             <field name='costs_types'>in</field>
             <field name='balance_directions'>out</field>
         </record>
+        <record id="small_business_chart5602023" model='finance.account'>
+            <field name='code'>5602023</field>
+            <field name='name'>管理费用-社保费用</field>
+            <field name='costs_types'>in</field>
+            <field name='balance_directions'>out</field>
+        </record>
         <!--增加类别-->
         <record id="domestic_supplier" model="core.category">
             <field name="name">国内供应商</field>
@@ -596,6 +602,11 @@
             <field name="name">广告费和业务宣传费</field>
             <field name="type">other_pay</field>
             <field name="account_id" ref="finance.small_business_chart5602005"/>
+        </record>
+        <record id="cost_small_business_chart5602013" model="core.category">
+            <field name="name">差旅费</field>
+            <field name="type">other_pay</field>
+            <field name="account_id" ref="finance.small_business_chart5602013"/>
         </record>
         <record id="cost_small_business_chart5602013" model="core.category">
             <field name="name">差旅费</field>

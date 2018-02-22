@@ -9,14 +9,15 @@
                         该模块为税务基础模块
     ''',
     'version': '11.11',
-    'depends': ['base', 'core', 'finance', 'money'],
+    'depends': ['base', 'core', 'finance', 'money', 'staff_wages'],
     'data': [
         'view/tax_config_view.xml',
         'view/tax_config_action.xml',
         'view/tax_config_menu.xml',
         'security/ir.model.access.csv',
         'data/company_config.xml',
-        'data/tax_code.xml'
+        'data/tax_code.xml',
+        'data/automatic_cost.xml'
     ],
     'demo': [
     ],
